@@ -1,11 +1,24 @@
-const NavBar = () => {
+import { Database } from "@/lib/database"
+import { createServerComponentClient } from "@supabase/auth-helpers-nextjs"
+import { cookies } from "next/headers"
+import SignOutButton from "./SignOutButton"
+
+const NavBar = async () => {
+  const supabase = createServerComponentClient<Database>({
+    cookies
+  })
+
+  const { data: { session } } = await supabase.auth.getSession()
   return (
     <div className="navbar bg-base-100">
       <div className="flex-1">
         <a className="btn btn-ghost normal-case text-xl" href="/">DnD.AI</a>
       </div>
       <div className="flex-none">
-        <a role="button" className="btn btn-primary" href="/login">Sign In</a>
+        {session ?
+          <SignOutButton /> :
+          <a role="button" className="btn btn-primary" href="/login">Sign In</a>
+        }
       </div>
     </div>
   )
