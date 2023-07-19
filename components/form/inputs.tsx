@@ -10,6 +10,7 @@ interface TextAreaProps extends ComponentProps<"textarea"> {
 }
 
 interface CheckIconProps extends ComponentProps<"input"> {
+  field: string;
   label: string;
 }
 
@@ -26,17 +27,19 @@ Input.displayName = 'Input'
 export const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(({ label, ...props }, ref) => (
   <div >
     <label className="label">{label}</label>
-    <textarea className="textarea textarea-bordered " ref={ref} {...props} />
+    <textarea className="textarea textarea-bordered w-full" ref={ref} {...props} />
     <FieldError name={props.name} />
   </div>
 ))
 
-export const CheckIcon = forwardRef<HTMLInputElement, CheckIconProps>(({ label, ...props }, ref) => (
-  <div>
-    <input type="checkbox" className="peer hidden" id="checkicon" />
-    <label htmlFor="checkicon" className="select-none p-3 rounded-md border-2 border-white cursor-pointer peer-checked:text-green-400">
-      Check me
+export const CheckIcon = forwardRef<HTMLInputElement, CheckIconProps>(({ label, field, ...props }, ref) => (
+  <div className="mt-5">
+    <input id={label} type="radio" name={field} ref={ref} className="radio hidden peer"  {...props} />
+    <label htmlFor={label} className="label flex flex-col select-none opacity-50 peer-checked:opacity-100">
+      <img className="rounded-lg" src={`/imgs/${label}.png`} />
+      {label}
     </label>
+
     <FieldError name={props.name} />
   </div>
 ))
