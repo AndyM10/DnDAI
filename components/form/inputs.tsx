@@ -33,10 +33,10 @@ export const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(({ label,
 ))
 
 export const CheckIcon = forwardRef<HTMLInputElement, CheckIconProps>(({ label, field, ...props }, ref) => (
-  <div className="mt-5">
+  <div className="flex items-center">
     <input id={label} type="radio" name={field} ref={ref} className="radio hidden peer"  {...props} />
-    <label htmlFor={label} className="label flex flex-col select-none opacity-50 peer-checked:opacity-100">
-      <img className="rounded-lg" src={`/imgs/${label}.png`} />
+    <label htmlFor={label} className="label gap-2 p-4 flex flex-col select-none opacity-50 peer-checked:opacity-100">
+      <img className="rounded-lg" width={90} height={90} src={`/imgs/${label}.png`} />
       {label}
     </label>
 
