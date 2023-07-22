@@ -25,7 +25,7 @@ interface FormProps<T extends FieldValues = any>
 export function Form<T extends FieldValues>({ form, onSubmit, children, ...props }: FormProps<T>) {
   return (
     <FormProvider {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} {...props}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="max-w-lg"{...props}>
         <fieldset disabled={form.formState.isSubmitting}>{children}</fieldset>
       </form>
     </FormProvider>
