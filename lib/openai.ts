@@ -13,7 +13,7 @@ export async function generateImage(prompt: string) {
   try {
     const resp = await openai.createImage({
       prompt,
-      n: 2,
+      n: 1,
       size: "1024x1024"
     })
 

@@ -12,7 +12,10 @@ const NavBar = async () => {
   return (
     <div className="navbar bg-base-100">
       <div className="flex-1">
-        <a className="btn btn-ghost normal-case text-xl" href="/">DnD.AI</a>
+        {session ?
+          <a className="btn btn-ghost normal-case text-xl" href={`/${session.user.user_metadata.username}`}>DnD.AI</a> :
+          <a className="btn btn-ghost normal-case text-xl" href="/">DnD.AI</a>
+        }
       </div>
       <div className="flex-none">
         {session ?
