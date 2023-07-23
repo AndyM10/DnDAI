@@ -33,6 +33,8 @@ export const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(({ label,
   </div>
 ))
 
+TextArea.displayName = 'TextArea'
+
 export const CheckIcon = forwardRef<HTMLInputElement, CheckIconProps>(({ label, format, field, ...props }, ref) => (
   <div className="flex items-center">
     <input id={label} type="radio" name={field} ref={ref} className="radio hidden peer"  {...props} />
@@ -45,4 +47,5 @@ export const CheckIcon = forwardRef<HTMLInputElement, CheckIconProps>(({ label, 
   </div>
 ))
 
+CheckIcon.displayName = 'CheckIcon'
 

@@ -5,8 +5,8 @@ import { CheckIcon, TextArea } from "@/components/form/inputs";
 import { z } from "zod";
 import { SubmitHandler } from "react-hook-form";
 import { generateImage } from "@/lib/openai";
-import { useEffect, useState } from "react";
-import { ImagesResponseDataInner, ImagesResponse } from "openai";
+import { useState } from "react";
+import { ImagesResponseDataInner } from "openai";
 import Loading from "./loading";
 import ImageContainer from "@/components/ImageContainer";
 
