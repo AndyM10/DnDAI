@@ -11,13 +11,19 @@ const NavBar = async () => {
   const { data: { session } } = await supabase.auth.getSession()
   return (
     <div className="navbar bg-base-100">
-      <div className="flex-1">
+      <div className=" navbar-start">
         {session ?
           <a className="btn btn-ghost normal-case text-xl" href={`/${session.user.user_metadata.username}`}>DnD.AI</a> :
           <a className="btn btn-ghost normal-case text-xl" href="/">DnD.AI</a>
         }
       </div>
-      <div className="flex-none">
+      {session ?
+        <div className="navbar-center">
+          <label className="label label-text text-xl">Welcome {session.user.user_metadata.username}</label>
+        </div>
+        : null
+      }
+      <div className="navbar-end">
         {session ?
           <SignOutButton /> :
           <a role="button" className="btn btn-primary" href="/login">Sign In</a>
