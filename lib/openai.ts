@@ -14,10 +14,10 @@ export async function generateImage(prompt: string) {
     const resp = await openai.createImage({
       prompt,
       n: 1,
-      size: "1024x1024"
+      size: "512x512"
     })
 
-    const data = resp.data
+    const data = resp.data.data
 
     return data
   } catch (e) {
