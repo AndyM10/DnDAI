@@ -1,7 +1,38 @@
+import { GenerationForm } from "@/app/[username]/page";
+import { SupabaseClient } from "@supabase/auth-helpers-nextjs";
 import { ImagesResponseDataInner } from "openai";
 
-export default function ImageContainer({ image, close }: { image: ImagesResponseDataInner[], close: () => void }) {
+interface ImageContainerProps {
+  image: ImagesResponseDataInner[];
+  close: () => void;
+  supabase: SupabaseClient;
+  formData: GenerationForm
+}
 
+
+export default async function ImageContainer({ image, close, supabase, formData }: ImageContainerProps) {
+
+  const user = await supabase.auth.getUser()
+  const saveImage = async () => {
+    try {
+      const { data, error } = await supabase.from('images').insert([{
+        image_url: image[0].url,
+        username: user.data.user?.user_metadata.username,
+        image_data: {
+          formData
+        }
+      }])
+
+      if (error) throw Error(error.message)
+
+      console.log(data)
+
+      close()
+
+    } catch (error) {
+      throw error
+    }
+  }
   return (
     <div className="card w-96 bg-base-300 shadow-xl mt-4">
       <div className="card-actions justify-end">
@@ -14,7 +45,7 @@ export default function ImageContainer({ image, close }: { image: ImagesResponse
           ))}
         </figure>
         <div className="card-body items-center text-center">
-          <button className="btn btn-primary">Save</button>
+          <button className="btn btn-primary" onClick={saveImage}>Save</button>
         </div>
       </div>
     </div>

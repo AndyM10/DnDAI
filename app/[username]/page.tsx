@@ -9,8 +9,10 @@ import { useState } from "react";
 import { ImagesResponseDataInner } from "openai";
 import Loading from "./loading";
 import ImageContainer from "@/components/ImageContainer";
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import { Database } from "@/lib/database";
 
-interface GenerationForm {
+export interface GenerationForm {
   race: any;
   style: string;
   class: string;
@@ -32,12 +34,14 @@ export default function Page() {
 
   const form = useForm({ schema: formSchema })
   const [images, setImages] = useState<ImagesResponseDataInner[]>([])
+  const [formData, setFormData] = useState<GenerationForm>()
   const [loading, setLoading] = useState(false)
-
+  const supabase = createClientComponentClient<Database>()
   const onSubmit: SubmitHandler<GenerationForm> = async (data) => {
     try {
       setLoading(true)
-      const images = await generateImage(`${data.style} concept art of a fantasy ${data.race} ${data.class}, dungeons and dragons, inspired by the best fantasy ${data.style} artists `)
+      setFormData(data)
+      const images = await generateImage(`${data.style} concept art of a ${data.race} ${data.class}, high fantasy,  dungeons and dragons, inspired by the best fantasy ${data.style} artists `)
       setLoading(false)
       setImages(images)
 
@@ -46,9 +50,9 @@ export default function Page() {
     }
   }
 
-
   const closeContainer = () => {
     setImages([])
+    setFormData(undefined)
   }
 
   return (
@@ -83,8 +87,8 @@ export default function Page() {
         </div >
       </div>
       <div className="flex w-full justify-evenly">
-        {images.length > 0 && !loading &&
-          <ImageContainer image={images} close={closeContainer} />
+        {images.length > 0 && !loading && formData &&
+          <ImageContainer image={images} close={closeContainer} supabase={supabase} formData={formData} />
         }
         {loading && (
           <Loading />
