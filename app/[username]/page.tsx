@@ -4,26 +4,23 @@ import { Form, useForm } from "@/components/form/form";
 import { CheckIcon, TextArea } from "@/components/form/inputs";
 import { z } from "zod";
 import { SubmitHandler } from "react-hook-form";
-import { generateImage } from "@/lib/openai";
 import { useState } from "react";
 import { ImagesResponseDataInner } from "openai";
 import Loading from "./loading";
 import ImageContainer from "@/components/ImageContainer";
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
-import { Database } from "@/lib/database";
 
 export interface GenerationForm {
   race: any;
   style: string;
-  class: string;
+  role: string;
   story: string;
 }
 
 const formSchema = z.object({
   race: z.enum(['human', 'elf', 'dwarf']),
   style: z.enum(['hyperrealism', 'anime', 'cartoon']),
-  class: z.enum(['barbarian', 'sorcerer', 'rogue']),
-  story: z.string().max(100)
+  role: z.enum(['barbarian', 'sorcerer', 'rogue']),
+  story: z.string().max(500)
 })
 
 
@@ -36,14 +33,21 @@ export default function Page() {
   const [images, setImages] = useState<ImagesResponseDataInner[]>([])
   const [formData, setFormData] = useState<GenerationForm>()
   const [loading, setLoading] = useState(false)
-  const supabase = createClientComponentClient<Database>()
   const onSubmit: SubmitHandler<GenerationForm> = async (data) => {
     try {
       setLoading(true)
       setFormData(data)
-      const images = await generateImage(`${data.style} concept art of a ${data.race} ${data.class}, high fantasy,  dungeons and dragons, inspired by the best fantasy ${data.style} artists `)
+      const image = await fetch('http://localhost:3000/api/generate', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+      })
+
       setLoading(false)
-      setImages(images)
+      setImages(await image.json())
+
 
     } catch (error) {
       throw error
@@ -70,7 +74,7 @@ export default function Page() {
             <label className="label text-xl">1. Choose your class</label>
             <div className="flex flex-row justify-evenly">
               {classes.map((role) => (
-                <CheckIcon key={`${role}-input`} field='race' label={role} value={role} format='jpeg' {...form.register('class')} />
+                <CheckIcon key={`${role}-input`} field='race' label={role} value={role} format='jpeg' {...form.register('role')} />
               ))}
             </div>
             <div className="divider m-0" ></div>
@@ -88,7 +92,7 @@ export default function Page() {
       </div>
       <div className="flex w-full justify-evenly">
         {images.length > 0 && !loading && formData &&
-          <ImageContainer image={images} close={closeContainer} supabase={supabase} formData={formData} />
+          <ImageContainer image={images} close={closeContainer} />
         }
         {loading && (
           <Loading />
