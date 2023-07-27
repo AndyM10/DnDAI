@@ -8,6 +8,7 @@ import { useState } from "react";
 import { ImagesResponseDataInner } from "openai";
 import Loading from "./loading";
 import ImageContainer from "@/components/ImageContainer";
+import { toast } from "react-hot-toast";
 
 export interface GenerationForm {
   race: any;
@@ -23,6 +24,14 @@ const formSchema = z.object({
   story: z.string().max(500)
 })
 
+
+const notify = () => toast.custom((t) => (
+  <div className={`toast toast-center toast-middle${t.visible ? 'animate-enter' : 'animate-leave'}}`}>
+    <div className="alert alert-success">
+      <span>Message sent successfully.</span>
+    </div>
+  </div >
+))
 
 export default function Page() {
   const races = ['human', 'elf', 'dwarf']
@@ -55,6 +64,7 @@ export default function Page() {
   }
 
   const closeContainer = () => {
+    notify()
     setImages([])
     setFormData(undefined)
   }
