@@ -1,31 +1,27 @@
 import { GenerationForm } from "@/app/[username]/page";
-import { SupabaseClient } from "@supabase/auth-helpers-nextjs";
 import { ImagesResponseDataInner } from "openai";
-
+/* ts-ignore */
 interface ImageContainerProps {
+  formData: GenerationForm;
   image: ImagesResponseDataInner[];
   close: () => void;
-  supabase: SupabaseClient;
-  formData: GenerationForm
 }
 
 
-export default async function ImageContainer({ image, close, supabase, formData }: ImageContainerProps) {
+export default async function ImageContainer({ image, close, formData }: ImageContainerProps) {
 
-  const user = await supabase.auth.getUser()
   const saveImage = async () => {
     try {
-      const { data, error } = await supabase.from('images').insert([{
-        image_url: image[0].url,
-        username: user.data.user?.user_metadata.username,
-        image_data: {
+      fetch('http://localhost:3000/api/save', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          image: image[0].url,
           formData
-        }
-      }])
-
-      if (error) throw Error(error.message)
-
-      console.log(data)
+        })
+      })
 
       close()
 
