@@ -1,12 +1,14 @@
+import { GenerationForm } from "@/app/[username]/page";
 import { ImagesResponseDataInner } from "openai";
 /* ts-ignore */
 interface ImageContainerProps {
+  formData: GenerationForm;
   image: ImagesResponseDataInner[];
   close: () => void;
 }
 
 
-export default async function ImageContainer({ image, close }: ImageContainerProps) {
+export default async function ImageContainer({ image, close, formData }: ImageContainerProps) {
 
   const saveImage = async () => {
     try {
@@ -15,7 +17,10 @@ export default async function ImageContainer({ image, close }: ImageContainerPro
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ image: image[0].url })
+        body: JSON.stringify({
+          image: image[0].url,
+          formData
+        })
       })
 
       close()

@@ -15,7 +15,13 @@ const getBufferFromUrl = async (url: string) => {
 }
 
 const bodySchema = z.object({
-  image: z.string().url()
+  image: z.string().url(),
+  formData: z.object({
+    race: z.enum(['human', 'elf', 'dwarf']),
+    style: z.enum(['hyperrealism', 'anime', 'cartoon']),
+    role: z.enum(['barbarian', 'sorcerer', 'rogue']),
+    story: z.string().max(500)
+  })
 })
 
 export async function POST(request: Request) {
@@ -30,15 +36,20 @@ export async function POST(request: Request) {
     }
 
     const username = getUserName(session)
-    const { image } = bodySchema.parse(await request.json())
-
+    const { image, formData } = bodySchema.parse(await request.json())
     const buffer = await getBufferFromUrl(image)
 
-    const { error } = await supabase.storage.from('stash').upload(`${username}/${Date.now()}.png`, buffer)
+    const { data, error } = await supabase.storage.from('stash').upload(`${username}/${Date.now()}.png`, buffer)
 
     if (error) {
       return NextResponse.json({ error: error }, { status: 500 })
     }
+
+    await supabase.from('images').insert({
+      image_url: data.path,
+      image_data: formData,
+      username,
+    })
 
     return NextResponse.json({ status: 200 })
   } catch (error) {

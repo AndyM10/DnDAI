@@ -102,7 +102,7 @@ export default function Page() {
       </div>
       <div className="flex w-full justify-evenly">
         {images.length > 0 && !loading && formData &&
-          <ImageContainer image={images} close={closeContainer} />
+          <ImageContainer image={images} formData={formData} close={closeContainer} />
         }
         {loading && (
           <Loading />
