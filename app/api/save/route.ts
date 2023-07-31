@@ -32,7 +32,14 @@ export async function POST(request: Request) {
     const { data: { session } } = await supabase.auth.getSession()
 
     if (!session?.user || !session?.access_token) {
-      return NextResponse.json({ error: "No session found" }, { status: 401 })
+      return NextResponse.json({ error: "No session found" }, {
+        status: 401,
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+          'Access-Control-Allow-Headers': 'Content-Type, Authorization'
+        }
+      })
     }
 
     const username = getUserName(session)
@@ -42,7 +49,14 @@ export async function POST(request: Request) {
     const { data, error } = await supabase.storage.from('stash').upload(`${username}/${Date.now()}.png`, buffer)
 
     if (error) {
-      return NextResponse.json({ error: error }, { status: 500 })
+      return NextResponse.json({ error: error }, {
+        status: 500,
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+          'Access-Control-Allow-Headers': 'Content-Type, Authorization'
+        }
+      })
     }
 
     await supabase.from('images').insert({
@@ -51,8 +65,23 @@ export async function POST(request: Request) {
       username,
     })
 
-    return NextResponse.json({ status: 200 })
+    return NextResponse.json({
+      status: 200,
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+        'Access-Control-Allow-Headers': 'Content-Type, Authorization'
+      }
+    })
   } catch (error) {
-    return NextResponse.json({ error: error }, { status: 500 })
+    return NextResponse.json({ error: error }, {
+      status: 500,
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+        'Access-Control-Allow-Headers': 'Content-Type, Authorization'
+      }
+
+    })
   }
 }

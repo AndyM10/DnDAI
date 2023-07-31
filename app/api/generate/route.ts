@@ -26,7 +26,15 @@ export async function POST(request: Request) {
     const { data: { session } } = await supabase.auth.getSession()
 
     if (!session?.user || !session?.access_token) {
-      return NextResponse.json({ error: "No session found" }, { status: 401 })
+      return NextResponse.json({ error: "No session found" }, {
+        status: 401,
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+          'Access-Control-Allow-Headers': 'Content-Type, Authorization'
+        }
+
+      })
     }
 
     const { race, style, story, role } = bodySchema.parse(await request.json())
@@ -39,18 +47,49 @@ export async function POST(request: Request) {
 
 
     if (resp.status !== 200) {
-      return NextResponse.json({ error: `OpenAI API error: ${resp.statusText}` }, { status: 500 })
+      return NextResponse.json({ error: `OpenAI API error: ${resp.statusText}` }, {
+        status: 500,
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+          'Access-Control-Allow-Headers': 'Content-Type, Authorization'
+        }
+
+      })
     }
 
     console.log(resp.data.data)
     const data = resp.data.data
 
-    return NextResponse.json(data, { status: 200 })
+    return NextResponse.json(data, {
+      status: 200,
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+        'Access-Control-Allow-Headers': 'Content-Type, Authorization'
+      }
+    })
   } catch (error) {
     if (error instanceof z.ZodError) {
-      return NextResponse.json({ error: error.errors }, { status: 400 })
+      return NextResponse.json({ error: error.errors }, {
+        status: 400,
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+          'Access-Control-Allow-Headers': 'Content-Type, Authorization'
+        }
+
+      })
     }
-    return NextResponse.json({ error: error }, { status: 500 })
+    return NextResponse.json({ error: error }, {
+      status: 500,
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+        'Access-Control-Allow-Headers': 'Content-Type, Authorization'
+      }
+
+    })
   }
 
 }
