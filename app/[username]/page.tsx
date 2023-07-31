@@ -37,7 +37,7 @@ export default function Page() {
   const races = ['human', 'elf', 'dwarf']
   const classes = ['barbarian', 'sorcerer', 'rogue']
   const stlyes = ['hyperrealism', 'anime', 'cartoon']
-
+  const url = `${process.env.NEXT_PUBLIC_API_URL}/api/generate`
   const form = useForm({ schema: formSchema })
   const [images, setImages] = useState<ImagesResponseDataInner[]>([])
   const [formData, setFormData] = useState<GenerationForm>()
@@ -46,7 +46,7 @@ export default function Page() {
     try {
       setLoading(true)
       setFormData(data)
-      const image = await fetch('http://localhost:3000/api/generate', {
+      const image = await fetch(url, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

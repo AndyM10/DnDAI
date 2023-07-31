@@ -10,9 +10,11 @@ interface ImageContainerProps {
 
 export default async function ImageContainer({ image, close, formData }: ImageContainerProps) {
 
+  const url = `${process.env.NEXT_PUBLIC_API_URL}/api/save`
+
   const saveImage = async () => {
     try {
-      fetch('http://localhost:3000/api/save', {
+      fetch(url, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
