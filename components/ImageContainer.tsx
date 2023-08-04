@@ -1,7 +1,36 @@
+import { GenerationForm } from "@/app/[username]/page";
 import { ImagesResponseDataInner } from "openai";
+/* ts-ignore */
+interface ImageContainerProps {
+  formData: GenerationForm;
+  image: ImagesResponseDataInner[];
+  close: () => void;
+}
 
-export default function ImageContainer({ image, close }: { image: ImagesResponseDataInner[], close: () => void }) {
 
+export default async function ImageContainer({ image, close, formData }: ImageContainerProps) {
+
+  const url = `${process.env.NEXT_PUBLIC_API_URL}/api/save`
+
+  const saveImage = async () => {
+    try {
+      fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          image: image[0].url,
+          formData
+        })
+      })
+
+      close()
+
+    } catch (error) {
+      throw error
+    }
+  }
   return (
     <div className="card w-96 bg-base-300 shadow-xl mt-4">
       <div className="card-actions justify-end">
@@ -14,7 +43,7 @@ export default function ImageContainer({ image, close }: { image: ImagesResponse
           ))}
         </figure>
         <div className="card-body items-center text-center">
-          <button className="btn btn-primary">Save</button>
+          <button className="btn btn-primary" onClick={saveImage}>Save</button>
         </div>
       </div>
     </div>
