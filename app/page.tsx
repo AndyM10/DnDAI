@@ -11,7 +11,7 @@ export default async function Home() {
 
   //if active session route to /[username]
   if (session) {
-    redirect(`/${session.user.user_metadata.username}`)
+    redirect(`/${session.user.user_metadata.username}/generate`)
 
   }
 
