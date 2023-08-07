@@ -1,4 +1,4 @@
-import { GenerationForm } from "@/app/[username]/page";
+import { GenerationForm } from "@/app/[username]/generate/page";
 import { ImagesResponseDataInner } from "openai";
 /* ts-ignore */
 interface ImageContainerProps {
