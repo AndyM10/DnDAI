@@ -1,3 +1,4 @@
+
 'use client'
 
 import { Form, useForm } from "@/components/form/form";
@@ -6,7 +7,7 @@ import { z } from "zod";
 import { SubmitHandler } from "react-hook-form";
 import { useState } from "react";
 import { ImagesResponseDataInner } from "openai";
-import Loading from "./loading";
+import Loading from "../loading";
 import ImageContainer from "@/components/ImageContainer";
 import { toast } from "react-hot-toast";
 

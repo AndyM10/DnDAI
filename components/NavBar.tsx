@@ -13,7 +13,7 @@ const NavBar = async () => {
     <div className="navbar bg-base-100">
       <div className=" navbar-start">
         {session ?
-          <a className="btn btn-ghost normal-case text-xl" href={`/${session.user.user_metadata.username}`}>DnD.AI</a> :
+          <a className="btn btn-ghost normal-case text-xl" href={`/${session.user.user_metadata.username}/generate`}>DnD.AI</a> :
           <a className="btn btn-ghost normal-case text-xl" href="/">DnD.AI</a>
         }
       </div>
