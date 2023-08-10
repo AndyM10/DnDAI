@@ -9,7 +9,7 @@ interface StashCardProps {
 
 export default function StashCard({ image, url }: StashCardProps) {
   const date = new Date(image.created_at)
-  const imageData = Object.values(image.image_data)
+  const imageData = Object.keys(image.image_data || {})
   return (
     <div className="card w-full p-6 bg-base-200 shadow-xl mt-6">
       <div className="text-xl font-semibold">
@@ -20,8 +20,8 @@ export default function StashCard({ image, url }: StashCardProps) {
         <img src={url} className="w-full h-full" />
         <div className="card-body">
           {
-            imageData.map((data) => (
-              <div className="text-xl font-semibold">
+            imageData.map((data, index) => (
+              <div key={index} className="text-xl font-semibold">
                 : {data?.toString()}
               </div>
             ))}
