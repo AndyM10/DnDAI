@@ -11,25 +11,25 @@ export interface Database {
     Tables: {
       images: {
         Row: {
-          created_at: string | null
+          created_at: string
           id: number
-          image_data: Json | null
-          image_url: string | null
-          username: string | null
+          image_data: Json
+          image_url: string
+          username: string
         }
         Insert: {
-          created_at?: string | null
+          created_at?: string
           id?: number
-          image_data?: Json | null
-          image_url?: string | null
-          username?: string | null
+          image_data: Json
+          image_url: string
+          username: string
         }
         Update: {
-          created_at?: string | null
+          created_at?: string
           id?: number
-          image_data?: Json | null
-          image_url?: string | null
-          username?: string | null
+          image_data?: Json
+          image_url?: string
+          username?: string
         }
         Relationships: []
       }

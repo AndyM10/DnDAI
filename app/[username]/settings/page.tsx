@@ -7,6 +7,7 @@ const supabase = createServerComponentClient<Database>({
   cookies
 })
 
+
 export default function Page() {
 
   return (
