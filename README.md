@@ -1,8 +1,21 @@
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
+### DnDAI
+
+This repo contains the source code the for the website [DnDAI](https://dnd-ai-pi.vercel.app/). This is built using NextJS (version 13) and typescript. 
+
+Other technologies include tailwindcss (DaisyUi), Zod and Supabase.
+
 ## Getting Started
 
-First, run the development server:
+First you will need to create a `.env.local` with the following config.
+
+```
+NEXT_PUBLIC_API_URL=http://localhost:3000/api
+NEXT_PUBLIC_SUPABASE_URL= /* Get these values from your Supabase account */
+NEXT_PUBLIC_SUPABASE_ANON_KEY= /* Get these values from your Supabase account */
+NEXT_PUBLIC_OPEN_AI_KEY= /* Get this from Andrew */
+```
 
 ```bash
 pnpm run dev
