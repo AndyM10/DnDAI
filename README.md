@@ -4,7 +4,7 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 
 This repo contains the source code the for the website [DnDAI](https://dnd-ai-pi.vercel.app/). This is built using NextJS (version 13) and typescript. 
 
-Other technologies include tailwindcss (DaisyUi), Zod and Supabase.
+Other technologies include tailwindcss (DaisyUi), Zod and Supabase. For Supabase access message Andrew.
 
 ## Getting Started
 
@@ -17,13 +17,23 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY= /* Get these values from your Supabase account */
 NEXT_PUBLIC_OPEN_AI_KEY= /* Get this from Andrew */
 ```
 
+Once this has been done, next is to install all the dependencies this project uses pnpm if you do not have this installed find these instructions [here](https://pnpm.io/installation)
+
+This repo is also built using Node version 19, please make sure you are using the correct version when installing dependencies. 
+
+```bash
+pnpm install
+```
+
+You can now run the development server using
+
 ```bash
 pnpm run dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+You can start editing the pages, The page auto-updates as you edit the file.
 
 This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
 
@@ -36,8 +46,8 @@ To learn more about Next.js, take a look at the following resources:
 
 You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
 
-## Deploy on Vercel
+## Deployment on Vercel
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+This project is deployed on vercel, a live preview will be built for each branch pushed to this repo. 
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+Message Andrew for vercel access to this project.
