@@ -14,6 +14,7 @@ const getStash = async (supabase: SupabaseClient<Database>, user: User) => {
     if (error) {
       throw Error(error.message)
     }
+
     return data
   } catch (error) {
     throw (error)
@@ -27,7 +28,6 @@ const getImageUrl = async (supabase: SupabaseClient<Database>, url: string) => {
     if (error) {
       throw Error(error.message)
     }
-    console.log(data)
     return data
 
   } catch (error) {
@@ -53,7 +53,6 @@ export default async function Page() {
         <h1 className="label text-3xl">Your Stash</h1>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {stash.map(async (image, index) => {
-            console.log(image.image_url)
             const { signedUrl } = await getImageUrl(supabase, image.image_url)
             return (
               <StashCard key={index} image={image} url={signedUrl} />
