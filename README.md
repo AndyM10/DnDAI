@@ -37,6 +37,43 @@ You can start editing the pages, The page auto-updates as you edit the file.
 
 This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
 
+## API
+
+This project currently has two api routes `/api/generate` and `/api/save` these endpoints following the new NextJS 13 route handlers. 
+
+For more information on route handlers check out the docs [here](https://nextjs.org/docs/app/building-your-application/routing/route-handlers)
+
+#### Generate a new image 
+
+<details>
+ <summary><code>POST</code> <code><b>/</b></code></summary>
+
+##### Parameters
+
+> | name      |  type     | data type               | description                                                           |
+> |-----------|-----------|-------------------------|-----------------------------------------------------------------------|
+> | None      |  required | object (JSON or YAML)   | `{"race":"dwarf","style":"hyperrealism","role":"sorcerer","story":""}`|
+
+
+##### Responses
+
+> | http code     | content-type                      | response                                                            |
+> |---------------|-----------------------------------|---------------------------------------------------------------------|
+> | `200`         | `text/plain;charset=UTF-8`        | `{"code":"200", "message": "[{url: string}]"}`                      |
+> | `400`         | `Zod Error`                       | `{"code":"400", "message": "<Zod Error>"}`                          |
+> | `401`         | `text/html;charset=utf-8`         | `{"code":"401", "message": "No session found"}`                     |
+> | `500`         | `text/html;charset=utf-8`         | `{"code":"500", "message": "OpenAI API error: ${statusText}"}`      |
+> | `500`         | `text/html;charset=utf-8`         | `{"code":"500","message": "<Error>"}`                               |
+
+##### Example cURL
+
+> ```javascript
+>  curl -X POST -H "Content-Type: application/json" --data {"race":"dwarf","style":"hyperrealism","role":"sorcerer","story":""} http://localhost:3000/api/generate
+> ```
+
+</details>
+
+
 ## Learn More
 
 To learn more about Next.js, take a look at the following resources:
