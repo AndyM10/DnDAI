@@ -11,9 +11,10 @@ Other technologies include tailwindcss (DaisyUi), Zod and Supabase. For Supabase
 First you will need to create a `.env.local` with the following config.
 
 ```
-NEXT_PUBLIC_API_URL=http://localhost:3000/api
+NEXT_PUBLIC_API_URL=http://localhost:3000
 NEXT_PUBLIC_SUPABASE_URL= /* Get these values from your Supabase account */
 NEXT_PUBLIC_SUPABASE_ANON_KEY= /* Get these values from your Supabase account */
+SUPABASE_SERVICE_ROLE_KEY= /* Get these values from your Supabase account */
 NEXT_PUBLIC_OPEN_AI_KEY= /* Get this from Andrew */
 ```
 
