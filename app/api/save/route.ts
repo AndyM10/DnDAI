@@ -74,6 +74,16 @@ export async function POST(request: Request) {
       }
     })
   } catch (error) {
+    if (error instanceof z.ZodError) {
+      return NextResponse.json({ error: error.errors }, {
+        status: 400,
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+          'Access-Control-Allow-Headers': 'Content-Type, Authorization'
+        }
+      })
+    }
     return NextResponse.json({ error: error }, {
       status: 500,
       headers: {
