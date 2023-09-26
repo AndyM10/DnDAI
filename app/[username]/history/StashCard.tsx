@@ -27,7 +27,7 @@ export default function StashCard({ imageDate, imageData, url }: StashCardProps)
           {
             //loop over imageData and create a div for each key value pair
             Object.entries(imageData).map(([key, value]) => (
-              <div>
+              <div key={key} className="text-xl font-semibold">
                 {value}
               </div>
             ))
