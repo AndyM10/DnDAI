@@ -1,5 +1,5 @@
 import { Database, Json } from "@/lib/database";
-
+import Image from "next/image";
 export interface StashCardProps {
   imageData: {
     race: string,
@@ -22,16 +22,21 @@ export default function StashCard({ imageDate, imageData, url }: StashCardProps)
       </div>
       <div className="divider mt-2"></div>
       <div className="flex flex-col h-full w-full bg-base-100 ">
-        <img src={url} className="w-full h-full" />
+        <Image src={url} width={512} height={512} alt={imageData.race + imageData.role} />
         <div className="card-body">
-          {
-            //loop over imageData and create a div for each key value pair
-            Object.entries(imageData).map(([key, value]) => (
-              <div key={key} className="text-xl font-semibold">
-                {value}
-              </div>
-            ))
-          }
+          <ul>
+            {
+              Object.entries(imageData).map(([key, value]) => {
+                if (value === "") return
+                return (
+                  <li key={key} className="list-disc font-semibold">
+                    {value}
+                  </li>
+                )
+              })
+            }
+
+          </ul>
         </div>
       </div>
     </div >
