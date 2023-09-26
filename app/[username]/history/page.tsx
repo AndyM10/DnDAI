@@ -2,7 +2,7 @@ import { Database } from "@/lib/database"
 import { SupabaseClient, User, createServerComponentClient } from "@supabase/auth-helpers-nextjs"
 import { redirect } from "next/navigation"
 import { cookies } from "next/headers"
-import StashCard from "./StashCard"
+import StashCard, { StashCardProps } from "./StashCard"
 
 const getStash = async (supabase: SupabaseClient<Database>, user: User) => {
   try {
@@ -54,8 +54,9 @@ export default async function Page() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {stash.map(async (image, index) => {
             const { signedUrl } = await getImageUrl(supabase, image.image_url)
+            console.log(image)
             return (
-              <StashCard key={index} image={image} url={signedUrl} />
+              <StashCard key={index} imageDate={image.created_at} imageData={image.image_data as StashCardProps['imageData']} url={signedUrl} />
             )
           })}
         </div>

@@ -1,15 +1,20 @@
-import { Database } from "@/lib/database";
-import { object } from "zod";
+import { Database, Json } from "@/lib/database";
 
-interface StashCardProps {
-  image: Database['public']['Tables']['images']['Row'],
+export interface StashCardProps {
+  imageData: {
+    race: string,
+    style: string,
+    role: string,
+    story: string,
+  },
+  imageDate: string,
   url: string
 }
 
 
-export default function StashCard({ image, url }: StashCardProps) {
-  const date = new Date(image.created_at)
-  const imageData = Object.keys(image.image_data || {})
+export default function StashCard({ imageDate, imageData, url }: StashCardProps) {
+  const date = new Date(imageDate)
+
   return (
     <div className="card w-full p-6 bg-base-200 shadow-xl mt-6">
       <div className="text-xl font-semibold">
@@ -20,11 +25,13 @@ export default function StashCard({ image, url }: StashCardProps) {
         <img src={url} className="w-full h-full" />
         <div className="card-body">
           {
-            imageData.map((data, index) => (
-              <div key={index} className="text-xl font-semibold">
-                : {data?.toString()}
+            //loop over imageData and create a div for each key value pair
+            Object.entries(imageData).map(([key, value]) => (
+              <div>
+                {value}
               </div>
-            ))}
+            ))
+          }
         </div>
       </div>
     </div >
