@@ -16,29 +16,32 @@ export default function StashCard({ imageDate, imageData, url }: StashCardProps)
   const date = new Date(imageDate)
 
   return (
-    <div className="card w-full p-6 bg-base-200 shadow-xl mt-6">
+    <div className="max-w-lg p-6 bg-base-200 shadow-xl mt-6 flex flex-col rounded">
       <div className="text-xl font-semibold">
-        {date.toUTCString()}
+        {imageData.race} {imageData.role}
       </div>
       <div className="divider mt-2"></div>
-      <div className="flex flex-col h-full w-full bg-base-100 ">
+      <div className="bg-base-100 ">
         <Image src={url} width={512} height={512} alt={imageData.race + imageData.role} />
-        <div className="card-body">
-          <ul>
-            {
-              Object.entries(imageData).map(([key, value]) => {
-                if (value === "") return
-                return (
-                  <li key={key} className="list-disc font-semibold">
-                    {value}
-                  </li>
-                )
-              })
-            }
-
-          </ul>
-        </div>
       </div>
+      <div className="my-2 bg-gray-600 rounded">
+        <ul className="p-2">
+          {
+            Object.entries(imageData).map(([key, value]) => {
+              if (value === "") return
+              return (
+                <li key={key} className="font-semibold">
+                  {key}: {value}
+                </li>
+              )
+            })
+          }
+          <li className="font-semibold">
+            created: {date.toUTCString()}
+          </li>
+        </ul>
+      </div>
+
     </div >
   )
 }  
