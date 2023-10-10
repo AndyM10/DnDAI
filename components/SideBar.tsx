@@ -2,12 +2,10 @@ import { Database } from '@/lib/database';
 import { createServerComponentClient } from '@supabase/auth-helpers-nextjs';
 import { cookies } from 'next/headers';
 import Link from 'next/link';
-
-
-
 const SideBar = async () => {
+  const cookieStore = cookies()
   const supabase = createServerComponentClient<Database>({
-    cookies
+    cookies: () => cookieStore
   })
   const { data: { user } } = await supabase.auth.getUser()
 

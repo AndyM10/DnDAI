@@ -4,8 +4,9 @@ import { cookies } from "next/headers"
 import SignOutButton from "./SignOutButton"
 
 const NavBar = async () => {
+  const cookieStore = cookies()
   const supabase = createServerComponentClient<Database>({
-    cookies
+    cookies: () => cookieStore
   })
 
   const { data: { session } } = await supabase.auth.getSession()

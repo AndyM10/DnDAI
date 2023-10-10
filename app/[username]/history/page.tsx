@@ -36,8 +36,9 @@ const getImageUrl = async (supabase: SupabaseClient<Database>, url: string) => {
 }
 
 export default async function Page() {
+  const cookieStore = cookies()
   const supabase = createServerComponentClient<Database>({
-    cookies
+    cookies: () => cookieStore
   })
   const { data: { user } } = await supabase.auth.getUser()
 
@@ -54,7 +55,6 @@ export default async function Page() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {stash.map(async (image, index) => {
             const { signedUrl } = await getImageUrl(supabase, image.image_url)
-            console.log(image)
             return (
               <StashCard key={index} imageDate={image.created_at} imageData={image.image_data as StashCardProps['imageData']} url={signedUrl} />
             )

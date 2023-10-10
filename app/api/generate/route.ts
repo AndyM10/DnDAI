@@ -20,8 +20,9 @@ const bodySchema = z.object({
 export async function POST(request: Request) {
 
   try {
+    const cookieStore = cookies()
     const supabase = createServerComponentClient<Database>({
-      cookies
+      cookies: () => cookieStore
     })
     const { data: { session } } = await supabase.auth.getSession()
 
@@ -58,7 +59,6 @@ export async function POST(request: Request) {
       })
     }
 
-    console.log(resp.data.data)
     const data = resp.data.data
 
     return NextResponse.json(data, {

@@ -9,7 +9,6 @@ const getUserName = (session: Session) => session.user.user_metadata.username
 const getBufferFromUrl = async (url: string) => {
   const res = await fetch(url)
   const buffer = await res.arrayBuffer()
-  console.log(buffer)
 
   return buffer
 }
@@ -26,9 +25,12 @@ const bodySchema = z.object({
 
 export async function POST(request: Request) {
   try {
+
+    const cookieStore = cookies()
     const supabase = createServerComponentClient<Database>({
-      cookies
+      cookies: () => cookieStore
     })
+
     const { data: { session } } = await supabase.auth.getSession()
 
     if (!session?.user || !session?.access_token) {
