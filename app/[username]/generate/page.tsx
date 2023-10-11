@@ -19,9 +19,9 @@ export interface GenerationForm {
 }
 
 const formSchema = z.object({
-  race: z.enum(['human', 'elf', 'dwarf']),
-  style: z.enum(['hyperrealism', 'anime', 'cartoon']),
-  role: z.enum(['barbarian', 'sorcerer', 'rogue']),
+  race: z.enum(['human', 'elf', 'dwarf', 'dragonborn', 'drow', 'gnome', 'halfling', 'wood-elf']),
+  style: z.enum(['hyperrealism', 'anime', 'cartoon', 'pop-art', 'pixel-art', '3d', 'minimalist']),
+  role: z.enum(['barbarian', 'sorcerer', 'rogue', 'cleric', 'druid', 'paladin', 'warlock']),
   story: z.string().max(500)
 })
 
@@ -35,9 +35,9 @@ const notify = () => toast.custom((t) => (
 ))
 
 export default function Page() {
-  const races = ['human', 'elf', 'dwarf']
-  const classes = ['barbarian', 'sorcerer', 'rogue']
-  const stlyes = ['hyperrealism', 'anime', 'cartoon']
+  const races = ['human', 'elf', 'dwarf','dragonborn', 'drow', 'gnome', 'halfling', 'wood-elf']
+  const classes = ['barbarian', 'sorcerer', 'rogue', 'cleric', 'druid', 'paladin', 'warlock']
+  const stlyes = ['hyperrealism', 'anime', 'cartoon', 'pop-art', 'pixel-art', '3d', 'minimalist']
   const url = `${process.env.NEXT_PUBLIC_API_URL}/api/generate`
   const form = useForm({ schema: formSchema })
   const [images, setImages] = useState<ImagesResponseDataInner[]>([])
