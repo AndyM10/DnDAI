@@ -19,9 +19,9 @@ export interface GenerationForm {
 }
 
 const formSchema = z.object({
-  race: z.enum(['human', 'elf', 'dwarf']),
-  style: z.enum(['hyperrealism', 'anime', 'cartoon']),
-  role: z.enum(['barbarian', 'sorcerer', 'rogue']),
+  race: z.enum(['human', 'elf', 'dwarf', 'dragonborn', 'drow', 'gnome', 'halfling', 'wood-elf']),
+  style: z.enum(['hyperrealism', 'anime', 'cartoon', 'pop-art', 'pixel-art', '3d', 'minimalist']),
+  role: z.enum(['barbarian', 'sorcerer', 'rogue', 'cleric', 'druid', 'paladin', 'warlock']),
   story: z.string().max(500)
 })
 
@@ -35,9 +35,9 @@ const notify = () => toast.custom((t) => (
 ))
 
 export default function Page() {
-  const races = ['human', 'elf', 'dwarf']
-  const classes = ['barbarian', 'sorcerer', 'rogue']
-  const stlyes = ['hyperrealism', 'anime', 'cartoon']
+  const races = ['human', 'elf', 'dwarf','dragonborn', 'drow', 'gnome', 'halfling', 'wood-elf']
+  const classes = ['barbarian', 'sorcerer', 'rogue', 'cleric', 'druid', 'paladin', 'warlock']
+  const stlyes = ['hyperrealism', 'anime', 'cartoon', 'pop-art', 'pixel-art', '3d', 'minimalist']
   const url = `${process.env.NEXT_PUBLIC_API_URL}/api/generate`
   const form = useForm({ schema: formSchema })
   const [images, setImages] = useState<ImagesResponseDataInner[]>([])
@@ -82,20 +82,20 @@ export default function Page() {
               ))}
             </div>
             <div className="divider m-0" ></div>
-            <label className="label text-xl">1. Choose your class</label>
+            <label className="label text-xl">2. Choose your class</label>
             <div className="flex flex-row justify-evenly">
               {classes.map((role) => (
                 <CheckIcon key={`${role}-input`} field='race' label={role} value={role} format='jpeg' {...form.register('role')} />
               ))}
             </div>
             <div className="divider m-0" ></div>
-            <label className="label text-xl">2. Choose your art style</label>
+            <label className="label text-xl">3. Choose your art style</label>
             <div className="flex flex-wrap justify-evenly">
               {stlyes.map((style) => (
                 <CheckIcon key={`${style}-input`} field='style' label={style} value={style} format='png' {...form.register('style')} />
               ))}
             </div>
-            <label className="label text-xl">3. Add your backstory</label>
+            <label className="label text-xl">4. Add your backstory</label>
             <TextArea label="Story" {...form.register('story')} />
             <button className="btn btn-secondary mt-4" type="submit">Submit</button>
           </Form>

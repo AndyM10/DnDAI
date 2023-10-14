@@ -16,9 +16,9 @@ const getBufferFromUrl = async (url: string) => {
 const bodySchema = z.object({
   image: z.string().url(),
   formData: z.object({
-    race: z.enum(['human', 'elf', 'dwarf']),
-    style: z.enum(['hyperrealism', 'anime', 'cartoon']),
-    role: z.enum(['barbarian', 'sorcerer', 'rogue']),
+    race: z.enum(['human', 'elf', 'dwarf', 'dragonborn', 'drow', 'gnome', 'halfling', 'wood-elf']),
+    style: z.enum(['hyperrealism', 'anime', 'cartoon', 'pop-art', 'pixel-art', '3d', 'minimalist']),
+    role: z.enum(['barbarian', 'sorcerer', 'rogue', 'cleric', 'druid', 'paladin', 'warlock']),
     story: z.string().max(500)
   })
 })
