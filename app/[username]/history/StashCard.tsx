@@ -1,5 +1,5 @@
-import { Database, Json } from "@/lib/database";
 import Image from "next/image";
+
 export interface StashCardProps {
   imageData: {
     race: string,
@@ -10,7 +10,6 @@ export interface StashCardProps {
   imageDate: string,
   url: string
 }
-
 
 export default function StashCard({ imageDate, imageData, url }: StashCardProps) {
   const date = new Date(imageDate)

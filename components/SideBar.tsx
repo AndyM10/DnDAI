@@ -2,6 +2,8 @@ import { Database } from '@/lib/database';
 import { createServerComponentClient } from '@supabase/auth-helpers-nextjs';
 import { cookies } from 'next/headers';
 import Link from 'next/link';
+
+
 const SideBar = async () => {
   const cookieStore = cookies()
   const supabase = createServerComponentClient<Database>({
@@ -12,7 +14,6 @@ const SideBar = async () => {
   if (!user) {
     return null
   }
-
   const routes = ['Generate', 'History', 'Settings']
 
   return (
@@ -22,7 +23,7 @@ const SideBar = async () => {
         {routes.map((route, index) => {
           return (
             <li key={index}>
-              <Link href={`${user.user_metadata.username}/${route.toLowerCase()}`} className='font-normal text-xl'>
+              <Link href={`/${user.user_metadata.username}/${route.toLowerCase()}`} className='font-normal text-xl'>
                 {route}
               </Link>
             </li>

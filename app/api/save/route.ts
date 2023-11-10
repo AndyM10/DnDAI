@@ -64,7 +64,6 @@ export async function POST(request: Request) {
     await supabase.from('images').insert({
       image_url: data.path,
       image_data: formData,
-      username,
     })
 
     return NextResponse.json({

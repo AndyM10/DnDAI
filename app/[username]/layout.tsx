@@ -1,4 +1,3 @@
-'use server'
 import SideBar from "@/components/SideBar";
 import { Bars3Icon } from "@heroicons/react/20/solid"
 import { cookies } from "next/headers";

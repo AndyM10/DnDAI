@@ -1,4 +1,3 @@
-
 'use client'
 
 import { Form, useForm } from "@/components/form/form";
@@ -6,10 +5,10 @@ import { CheckIcon, TextArea } from "@/components/form/inputs";
 import { z } from "zod";
 import { SubmitHandler } from "react-hook-form";
 import { useState } from "react";
-import { ImagesResponseDataInner } from "openai";
 import Loading from "../loading";
 import ImageContainer from "@/components/ImageContainer";
 import { toast } from "react-hot-toast";
+import { Image } from "openai/resources";
 
 export interface GenerationForm {
   race: any;
@@ -20,31 +19,28 @@ export interface GenerationForm {
 
 const formSchema = z.object({
   race: z.enum(['human', 'elf', 'dwarf', 'dragonborn', 'drow', 'gnome', 'halfling', 'wood-elf']),
-  style: z.enum(['hyperrealism', 'anime', 'cartoon', 'pop-art', 'pixel-art', '3d', 'minimalist']),
+  style: z.enum(['hyperrealism', 'anime', 'cartoon', 'pop-art', 'pixel-art', '3d', 'minimalist', 'isometric']),
   role: z.enum(['barbarian', 'sorcerer', 'rogue', 'cleric', 'druid', 'paladin', 'warlock']),
   story: z.string().max(500)
 })
 
 
-const notify = () => toast.custom((t) => (
-  <div className={`toast toast-center toast-middle${t.visible ? 'animate-enter' : 'animate-leave'}}`}>
-    <div className="alert alert-success">
-      <span>Message sent successfully.</span>
-    </div>
-  </div >
-))
-
 export default function Page() {
-  const races = ['human', 'elf', 'dwarf','dragonborn', 'drow', 'gnome', 'halfling', 'wood-elf']
+  const races = ['human', 'elf', 'dwarf', 'dragonborn', 'drow', 'gnome', 'halfling', 'wood-elf']
   const classes = ['barbarian', 'sorcerer', 'rogue', 'cleric', 'druid', 'paladin', 'warlock']
-  const stlyes = ['hyperrealism', 'anime', 'cartoon', 'pop-art', 'pixel-art', '3d', 'minimalist']
+  const stlyes = ['hyperrealism', 'anime', 'cartoon', 'pop-art', 'pixel-art', '3d', 'minimalist', 'isometric']
   const url = `${process.env.NEXT_PUBLIC_API_URL}/api/generate`
   const form = useForm({ schema: formSchema })
-  const [images, setImages] = useState<ImagesResponseDataInner[]>([])
+  const [images, setImages] = useState<Image[]>([])
   const [formData, setFormData] = useState<GenerationForm>()
   const [loading, setLoading] = useState(false)
+  const [isError, setIsError] = useState<Error>()
+
+  if (isError) throw isError
+
   const onSubmit: SubmitHandler<GenerationForm> = async (data) => {
     try {
+
       setLoading(true)
       setFormData(data)
       const image = await fetch(url, {
@@ -60,12 +56,11 @@ export default function Page() {
 
 
     } catch (error) {
-      throw error
+      setIsError(new Error(`${error}`))
     }
   }
 
   const closeContainer = () => {
-    notify()
     setImages([])
     setFormData(undefined)
   }
