@@ -3,8 +3,8 @@ import { Form, useForm } from "@/components/form/form";
 import { z } from "zod";
 import { SubmitHandler } from 'react-hook-form';
 import { Input } from "@/components/form/inputs";
-import { AppRouterInstance } from "next/dist/shared/lib/app-router-context";
 import { SupabaseClient } from "@supabase/auth-helpers-nextjs";
+import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
 
 interface SignUpForm {
   email: string;

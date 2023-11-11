@@ -1,17 +1,17 @@
 'use client'
-
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 import { useRouter } from 'next/navigation'
-
-
-import type { Database } from '@/lib/database'
 import SignUpForm from './SignUpForm'
 import LoginForm from './LoginForm'
+import { createBrowserClient } from '@supabase/ssr'
+import { Database } from '@/lib/database'
 
 
 export default function Page() {
   const router = useRouter()
-  const supabase = createClientComponentClient<Database>()
+  const supabase = createBrowserClient<Database>(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  )
 
   return (
     <>

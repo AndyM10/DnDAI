@@ -4,7 +4,7 @@ import { cookies } from "next/headers"
 import { NextResponse } from "next/server"
 import { z } from "zod"
 
-const getUserName = (session: Session) => session.user.user_metadata.username
+const getUserId = (session: Session) => session.user.id
 
 const getBufferFromUrl = async (url: string) => {
   const res = await fetch(url)
@@ -44,11 +44,10 @@ export async function POST(request: Request) {
       })
     }
 
-    const username = getUserName(session)
     const { image, formData } = bodySchema.parse(await request.json())
     const buffer = await getBufferFromUrl(image)
-
-    const { data, error } = await supabase.storage.from('stash').upload(`${username}/${Date.now()}.png`, buffer)
+    const id = getUserId(session)
+    const { data, error } = await supabase.storage.from('stash').upload(`${id}/${Date.now()}.png`, buffer)
 
     if (error) {
       return NextResponse.json({ error: error }, {
@@ -61,10 +60,13 @@ export async function POST(request: Request) {
       })
     }
 
-    await supabase.from('images').insert({
+    const dbcall = await supabase.from('history').insert({
+      id: id,
       image_url: data.path,
       image_data: formData,
     })
+
+    console.log(dbcall)
 
     return NextResponse.json({
       status: 200,
