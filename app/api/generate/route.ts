@@ -1,10 +1,10 @@
 
-import { Database } from "@/lib/database"
-import { createServerComponentClient } from "@supabase/auth-helpers-nextjs"
 import { cookies } from "next/headers"
 import { NextResponse } from "next/server"
 import { z } from "zod"
 import OpenAi, { ClientOptions } from 'openai';
+import { serverClient } from "@/lib/serverClient";
+import { AuthError } from "@supabase/supabase-js";
 
 const config: ClientOptions = {
   apiKey: process.env.OPEN_AI_KEY,
@@ -21,32 +21,16 @@ export async function POST(request: Request) {
 
   try {
     const cookieStore = cookies()
-    const supabase = createServerComponentClient<Database>({
-      cookies: () => cookieStore
-    })
+    const { supabase } = serverClient(cookieStore)
+
     const { data: { session }, error } = await supabase.auth.getSession()
 
-    if (error) {
-      return NextResponse.json({ error: error.message }, {
-        status: 500,
-        headers: {
-          'Access-Control-Allow-Origin': '*',
-          'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-          'Access-Control-Allow-Headers': 'Content-Type, Authorization'
-        }
-      })
+    if (!session?.user || !session?.access_token) {
+      throw new AuthError('No session found')
     }
 
-    if (!session?.user || !session?.access_token) {
-      return NextResponse.json({ error: "No session found" }, {
-        status: 401,
-        headers: {
-          'Access-Control-Allow-Origin': '*',
-          'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-          'Access-Control-Allow-Headers': 'Content-Type, Authorization'
-        }
-
-      })
+    if (error) {
+      throw error
     }
 
     const { race, style, story, role } = bodySchema.parse(await request.json())
@@ -63,15 +47,7 @@ export async function POST(request: Request) {
     })
 
     if (!resp) {
-      return NextResponse.json({ error: `OpenAI API error: ${resp}` }, {
-        status: 500,
-        headers: {
-          'Access-Control-Allow-Origin': '*',
-          'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-          'Access-Control-Allow-Headers': 'Content-Type, Authorization'
-        }
-
-      })
+      throw new Error('OpenAI API error: ' + resp)
     }
 
     const data = resp.data
@@ -85,25 +61,35 @@ export async function POST(request: Request) {
       }
     })
   } catch (error) {
-    if (error instanceof z.ZodError) {
-      return NextResponse.json({ error: error.errors }, {
-        status: 400,
-        headers: {
-          'Access-Control-Allow-Origin': '*',
-          'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-          'Access-Control-Allow-Headers': 'Content-Type, Authorization'
-        }
-      })
+
+    switch (error) {
+      case error instanceof AuthError:
+        return NextResponse.json({ error: `Not authorized: ${error}` }, {
+          status: 401,
+          headers: {
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+            'Access-Control-Allow-Headers': 'Content-Type, Authorization'
+          }
+        })
+      case error instanceof z.ZodError:
+        return NextResponse.json({ error: error }, {
+          status: 400,
+          headers: {
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+            'Access-Control-Allow-Headers': 'Content-Type, Authorization'
+          }
+        })
+      default:
+        return NextResponse.json({ error: error }, {
+          status: 500,
+          headers: {
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+            'Access-Control-Allow-Headers': 'Content-Type, Authorization'
+          }
+        })
     }
-    return NextResponse.json({ error: error }, {
-      status: 500,
-      headers: {
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-        'Access-Control-Allow-Headers': 'Content-Type, Authorization'
-      }
-
-    })
   }
-
 }

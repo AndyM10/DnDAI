@@ -1,10 +1,12 @@
 import { serverClient } from "@/lib/serverClient"
 import { cookies } from "next/headers"
+import Link from "next/link"
 
 const NavBar = async () => {
   const cookieStore = cookies()
   const { supabase } = serverClient(cookieStore)
   const { data: { session } } = await supabase.auth.getSession()
+  const username = session?.user.user_metadata.username
 
   return (
     <>
@@ -18,9 +20,9 @@ const NavBar = async () => {
               <li><a href="/">Homepage</a></li>
               {session ?
                 <>
-                  <li><a href={`/${session.user.user_metadata.username}/generate`}>Generate</a></li>
-                  <li><a>History</a></li>
-                  <li><a>About</a></li>
+                  <li><Link href={`/${username}/generate`}>Generate</Link></li>
+                  <li><Link href={`/${username}/history`}>History</Link></li>
+                  <li><Link href={`/${username}/settings`}>Settings</Link></li>
                 </>
                 : null}
             </ul>
@@ -44,7 +46,6 @@ const NavBar = async () => {
                       Profile
                     </a>
                   </li>
-                  <li><a>Settings</a></li>
                   <li><a>Logout</a></li>
                 </ul>
               </div> :

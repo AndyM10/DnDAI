@@ -2,16 +2,12 @@
 import { useRouter } from 'next/navigation'
 import SignUpForm from './SignUpForm'
 import LoginForm from './LoginForm'
-import { createBrowserClient } from '@supabase/ssr'
-import { Database } from '@/lib/database'
+import { browserClient } from '@/lib/browserClient'
 
 
 export default function Page() {
   const router = useRouter()
-  const supabase = createBrowserClient<Database>(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-  )
+  const { supabase } = browserClient()
 
   return (
     <>

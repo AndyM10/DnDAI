@@ -21,7 +21,7 @@ export default function StashCard({ imageDate, imageData, url }: StashCardProps)
       </div>
       <div className="divider mt-2"></div>
       <div className="bg-base-100 ">
-        <Image src={url} width={512} height={512} alt={imageData.race + imageData.role} />
+        <Image priority={true} src={url} width={512} height={512} alt={imageData.race + imageData.role} />
       </div>
       <div className="my-2 bg-gray-600 rounded">
         <ul className="p-2">
@@ -40,7 +40,6 @@ export default function StashCard({ imageDate, imageData, url }: StashCardProps)
           </li>
         </ul>
       </div>
-
     </div >
   )
 }  

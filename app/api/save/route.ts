@@ -1,5 +1,6 @@
-import { Database } from "@/lib/database"
-import { Session, createServerComponentClient } from "@supabase/auth-helpers-nextjs"
+import { serverClient } from "@/lib/serverClient"
+import { AuthError, Session, } from "@supabase/supabase-js"
+import { StorageError } from "@supabase/storage-js"
 import { cookies } from "next/headers"
 import { NextResponse } from "next/server"
 import { z } from "zod"
@@ -25,23 +26,12 @@ const bodySchema = z.object({
 
 export async function POST(request: Request) {
   try {
-
     const cookieStore = cookies()
-    const supabase = createServerComponentClient<Database>({
-      cookies: () => cookieStore
-    })
-
+    const { supabase } = serverClient(cookieStore)
     const { data: { session } } = await supabase.auth.getSession()
 
     if (!session?.user || !session?.access_token) {
-      return NextResponse.json({ error: "No session found" }, {
-        status: 401,
-        headers: {
-          'Access-Control-Allow-Origin': '*',
-          'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-          'Access-Control-Allow-Headers': 'Content-Type, Authorization'
-        }
-      })
+      throw new AuthError('No session found')
     }
 
     const { image, formData } = bodySchema.parse(await request.json())
@@ -50,23 +40,20 @@ export async function POST(request: Request) {
     const { data, error } = await supabase.storage.from('stash').upload(`${id}/${Date.now()}.png`, buffer)
 
     if (error) {
-      return NextResponse.json({ error: error }, {
-        status: 500,
-        headers: {
-          'Access-Control-Allow-Origin': '*',
-          'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-          'Access-Control-Allow-Headers': 'Content-Type, Authorization'
-        }
-      })
+      throw error
     }
 
-    const dbcall = await supabase.from('history').insert({
+    const insert = await supabase.from('history').insert({
       id: id,
       image_url: data.path,
       image_data: formData,
+
     })
 
-    console.log(dbcall)
+    if (insert.error) {
+      throw insert.error
+    }
+
 
     return NextResponse.json({
       status: 200,
@@ -77,24 +64,35 @@ export async function POST(request: Request) {
       }
     })
   } catch (error) {
-    if (error instanceof z.ZodError) {
-      return NextResponse.json({ error: error.errors }, {
-        status: 400,
-        headers: {
-          'Access-Control-Allow-Origin': '*',
-          'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-          'Access-Control-Allow-Headers': 'Content-Type, Authorization'
-        }
-      })
-    }
-    return NextResponse.json({ error: error }, {
-      status: 500,
-      headers: {
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-        'Access-Control-Allow-Headers': 'Content-Type, Authorization'
-      }
 
-    })
+    switch (error) {
+      case error instanceof AuthError:
+        return NextResponse.json({ error: `Not authorized: ${error}` }, {
+          status: 401,
+          headers: {
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+            'Access-Control-Allow-Headers': 'Content-Type, Authorization'
+          }
+        })
+      case error instanceof z.ZodError:
+        return NextResponse.json({ error: error }, {
+          status: 400,
+          headers: {
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+            'Access-Control-Allow-Headers': 'Content-Type, Authorization'
+          }
+        })
+      default:
+        return NextResponse.json({ error: error }, {
+          status: 500,
+          headers: {
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+            'Access-Control-Allow-Headers': 'Content-Type, Authorization'
+          }
+        })
+    }
   }
 }

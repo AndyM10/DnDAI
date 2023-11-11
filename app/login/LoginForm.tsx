@@ -1,6 +1,6 @@
 import { Form, useForm } from "@/components/form/form";
 import { Input } from "@/components/form/inputs";
-import { SupabaseClient } from "@supabase/auth-helpers-nextjs";
+import { SupabaseClient } from "@supabase/supabase-js";
 import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
 import { useState } from "react";
 import { SubmitHandler } from "react-hook-form";
@@ -35,6 +35,7 @@ export default function LoginForm({ router, supabase }: { router: AppRouterInsta
       }
 
       if (data.user?.user_metadata.username) {
+        router.refresh()
         router.push(`/${data.user?.user_metadata.username}/generate`)
       }
     } catch (error) {

@@ -7,7 +7,6 @@ import { SubmitHandler } from "react-hook-form";
 import { useState } from "react";
 import Loading from "../loading";
 import ImageContainer from "@/components/ImageContainer";
-import { toast } from "react-hot-toast";
 import { Image } from "openai/resources";
 
 export interface GenerationForm {
