@@ -50,15 +50,17 @@ export async function POST(request: Request) {
     }
 
     const { race, style, story, role } = bodySchema.parse(await request.json())
-    const prompt = `${style} concept art of a ${race} ${role} character, high fantasy, dungeons and dragons, inspired by the best fantasy ${style} artists.`
+    const prompt = `Generate a concept art for a Dungeons & Dragons character based on the following parameters:
+        the characters race is ${race},
+        the art style should be ${style},
+        the character is a ${role},
+`
 
     const resp = await openai.images.generate({
-      prompt: 'A drawing of a dragon',
+      prompt,
       n: 1,
       size: "512x512"
     })
-
-    console.log('HEHEHEHE')
 
     if (!resp) {
       return NextResponse.json({ error: `OpenAI API error: ${resp}` }, {
