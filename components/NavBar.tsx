@@ -1,6 +1,7 @@
 import { serverClient } from "@/lib/serverClient"
 import { cookies } from "next/headers"
 import Link from "next/link"
+import { SignOut } from "./form/SignOutButton"
 
 const NavBar = async () => {
   const cookieStore = cookies()
@@ -46,7 +47,7 @@ const NavBar = async () => {
                       Profile
                     </a>
                   </li>
-                  <li><a>Logout</a></li>
+                  <li><SignOut /></li>
                 </ul>
               </div> :
               <a className="btn btn-primary" href="/login">Sign Up</a>

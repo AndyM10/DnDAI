@@ -39,7 +39,6 @@ export default function SignUpForm({ router, supabase }: { router: AppRouterInst
       })
       if (resp.error) throw Error(resp.error.message)
       if (resp.data) {
-        console.log('user logged in!', resp.data)
         router.refresh()
         router.push(`/${resp.data.user?.user_metadata.username}/generate`)
       }

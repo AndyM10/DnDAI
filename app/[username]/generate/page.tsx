@@ -39,7 +39,6 @@ export default function Page() {
 
   const onSubmit: SubmitHandler<GenerationForm> = async (data) => {
     try {
-
       setLoading(true)
       setFormData(data)
       const image = await fetch(url, {
@@ -52,7 +51,6 @@ export default function Page() {
 
       setLoading(false)
       setImages(await image.json())
-
 
     } catch (error) {
       setIsError(new Error(`${error}`))

@@ -17,7 +17,6 @@ const formSchema = z.object({
 })
 
 export default function LoginForm({ router, supabase }: { router: AppRouterInstance, supabase: SupabaseClient }) {
-
   const form = useForm({ schema: formSchema })
   const [isError, setIsError] = useState<Error>()
 
