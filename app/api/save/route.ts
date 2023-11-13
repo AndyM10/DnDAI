@@ -1,19 +1,29 @@
 import { serverClient } from "@/lib/serverClient"
-import { AuthError, Session, } from "@supabase/supabase-js"
-import { StorageError } from "@supabase/storage-js"
+import { AuthError, Session, SupabaseClient, } from "@supabase/supabase-js"
 import { cookies } from "next/headers"
 import { NextResponse } from "next/server"
 import { z } from "zod"
 
 const getUserId = (session: Session) => session.user.id
-
 const getBufferFromUrl = async (url: string) => {
   const res = await fetch(url)
   const buffer = await res.arrayBuffer()
-
   return buffer
 }
 
+const bucketUpload = async (
+  image: string,
+  supabase: SupabaseClient,
+  id: string
+) => {
+  const buffer = await getBufferFromUrl(image)
+  const { data, error } = await supabase.storage.from('stash').upload(`${id}/${Date.now()}.png`, buffer)
+
+  if (error) {
+    throw error
+  }
+  return { data }
+}
 const bodySchema = z.object({
   image: z.string().url(),
   formData: z.object({
@@ -35,25 +45,17 @@ export async function POST(request: Request) {
     }
 
     const { image, formData } = bodySchema.parse(await request.json())
-    const buffer = await getBufferFromUrl(image)
     const id = getUserId(session)
-    const { data, error } = await supabase.storage.from('stash').upload(`${id}/${Date.now()}.png`, buffer)
+    const { data } = await bucketUpload(image, supabase, id)
+    const { error } = await supabase.from('history').insert({
+      image_url: data.path,
+      image_data: formData,
+      user: id
+    })
 
     if (error) {
       throw error
     }
-
-    const insert = await supabase.from('history').insert({
-      id: id,
-      image_url: data.path,
-      image_data: formData,
-
-    })
-
-    if (insert.error) {
-      throw insert.error
-    }
-
 
     return NextResponse.json({
       status: 200,

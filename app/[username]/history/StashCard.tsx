@@ -15,7 +15,7 @@ export default function StashCard({ imageDate, imageData, url }: StashCardProps)
   const date = new Date(imageDate)
 
   return (
-    <div className="max-w-lg p-6 bg-base-200 shadow-xl mt-6 flex flex-col rounded">
+    <div className="max-w-lg p-6 bg-base-100 shadow-xl mt-6 flex flex-col rounded">
       <div className="text-xl font-semibold">
         {imageData.race} {imageData.role}
       </div>

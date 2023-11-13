@@ -10,7 +10,7 @@ const getStash = async (supabase: SupabaseClient<Database>, user: User) => {
     const { data, error } = await supabase
       .from('history')
       .select('*')
-      .eq('id', user.id)
+      .eq('user', user.id)
 
     if (error) {
       throw Error(error.message)
@@ -25,12 +25,10 @@ const getStash = async (supabase: SupabaseClient<Database>, user: User) => {
 const getImageUrl = async (supabase: SupabaseClient<Database>, url: string) => {
   try {
     const { data, error } = await supabase.storage.from('stash').createSignedUrl(url, 60)
-
     if (error) {
       throw Error(error.message)
     }
     return data
-
   } catch (error) {
     throw (error)
   }
@@ -51,7 +49,7 @@ export default async function Page() {
     <div className="flex flex-col items-center">
       <div>
         <h1 className="label text-3xl">Your Stash</h1>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mx-4">
           {stash.map(async (image, index) => {
             const { signedUrl } = await getImageUrl(supabase, image.image_url!)
             return (

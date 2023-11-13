@@ -65,7 +65,7 @@ export default function Page() {
   }
 
   return (
-    <div className="flex flex-col items-center">
+    <div className="flex flex-col items-center p-4">
       <div className="max-w-screen-lg w-full border-black border rounded-lg">
         <div className="p-8">
           <Form form={form} onSubmit={onSubmit} >

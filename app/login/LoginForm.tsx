@@ -30,12 +30,12 @@ export default function LoginForm({ router, supabase }: { router: AppRouterInsta
         password: formData.password,
       })
 
+      router.refresh()
       if (error) {
         throw (error.message)
       }
 
       if (data.user?.user_metadata.username) {
-        router.refresh()
         router.push(`/${data.user?.user_metadata.username}/generate`)
       }
     } catch (error) {

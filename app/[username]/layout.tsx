@@ -13,7 +13,7 @@ export default async function UserDashboardLayout({ children }: { children: Reac
   }
 
   return (
-    <section>
+    <section >
       {children}
     </section>
   )

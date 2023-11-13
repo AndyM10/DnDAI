@@ -12,23 +12,34 @@ export interface Database {
       history: {
         Row: {
           created_at: string
-          id: string
+          id: number
           image_data: Json | null
           image_url: string | null
+          user: string
         }
         Insert: {
           created_at?: string
-          id?: string
+          id?: number
           image_data?: Json | null
           image_url?: string | null
+          user: string
         }
         Update: {
           created_at?: string
-          id?: string
+          id?: number
           image_data?: Json | null
           image_url?: string | null
+          user?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "history_user_fkey"
+            columns: ["user"]
+            isOneToOne: true
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          }
+        ]
       }
       profiles: {
         Row: {
