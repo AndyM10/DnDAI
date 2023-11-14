@@ -1,5 +1,4 @@
 'use client'
-
 import { Form, useForm } from "@/components/form/form";
 import { CheckIcon, TextArea } from "@/components/form/inputs";
 import { z } from "zod";
@@ -8,6 +7,7 @@ import { useState } from "react";
 import Loading from "../loading";
 import ImageContainer from "@/components/ImageContainer";
 import { Image } from "openai/resources";
+import { useAuth } from "@/lib/authContext";
 
 export interface GenerationForm {
   race: any;
@@ -34,6 +34,9 @@ export default function Page() {
   const [formData, setFormData] = useState<GenerationForm>()
   const [loading, setLoading] = useState(false)
   const [isError, setIsError] = useState<Error>()
+
+  const { user } = useAuth()
+  console.log(user)
 
   if (isError) throw isError
 

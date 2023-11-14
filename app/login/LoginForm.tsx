@@ -1,8 +1,9 @@
 import { Form, useForm } from "@/components/form/form";
 import { Input } from "@/components/form/inputs";
+import { useAuth } from "@/lib/authContext";
 import { SupabaseClient } from "@supabase/supabase-js";
 import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { SubmitHandler } from "react-hook-form";
 import { z } from "zod";
 
@@ -16,27 +17,20 @@ const formSchema = z.object({
   password: z.string().min(8).max(100),
 })
 
-export default function LoginForm({ router, supabase }: { router: AppRouterInstance, supabase: SupabaseClient }) {
+export default function LoginForm({ router }: { router: AppRouterInstance }) {
   const form = useForm({ schema: formSchema })
   const [isError, setIsError] = useState<Error>()
+  const { username, signIn } = useAuth()
+
+  useEffect(() => {
+    if (username) router.push(`/${username}/generate`)
+  }, [username])
 
   if (isError) throw isError
 
   const onSubmit: SubmitHandler<LoginForm> = async (formData) => {
     try {
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email: formData.email,
-        password: formData.password,
-      })
-
-      router.refresh()
-      if (error) {
-        throw (error.message)
-      }
-
-      if (data.user?.user_metadata.username) {
-        router.push(`/${data.user?.user_metadata.username}/generate`)
-      }
+      signIn(formData.email, formData.password)
     } catch (error) {
       setIsError(new Error(`${error}`))
     }

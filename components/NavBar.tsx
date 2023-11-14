@@ -1,14 +1,9 @@
-import { serverClient } from "@/lib/serverClient"
-import { cookies } from "next/headers"
+'use client'
 import Link from "next/link"
-import { SignOut } from "./form/SignOutButton"
+import { useAuth } from "@/lib/authContext"
 
-const NavBar = async () => {
-  const cookieStore = cookies()
-  const { supabase } = serverClient(cookieStore)
-  const { data: { session } } = await supabase.auth.getSession()
-  const username = session?.user.user_metadata.username
-
+const NavBar = () => {
+  const { session, username, signOut } = useAuth()
   return (
     <>
       <div className="navbar bg-base-100">
@@ -18,7 +13,6 @@ const NavBar = async () => {
               <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h7" /></svg>
             </label>
             <ul tabIndex={0} className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
-              <li><a href="/">Homepage</a></li>
               {session ?
                 <>
                   <li><Link href={`/${username}/generate`}>Generate</Link></li>
@@ -47,7 +41,7 @@ const NavBar = async () => {
                       Profile
                     </a>
                   </li>
-                  <li><SignOut /></li>
+                  <li><a onClick={() => signOut()}>Logout</a></li>
                 </ul>
               </div> :
               <a className="btn btn-primary" href="/login">Sign Up</a>

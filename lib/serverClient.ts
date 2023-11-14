@@ -11,7 +11,6 @@ export function serverClient(cookieStore: ReadonlyRequestCookies) {
       cookies: {
         get(name: string) {
           return cookieStore.get(name)?.value
-
         },
       },
     }

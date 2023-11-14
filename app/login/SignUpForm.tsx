@@ -3,8 +3,8 @@ import { Form, useForm } from "@/components/form/form";
 import { z } from "zod";
 import { SubmitHandler } from 'react-hook-form';
 import { Input } from "@/components/form/inputs";
-import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
 import { SupabaseClient } from "@supabase/supabase-js";
+import { useAuth } from "@/lib/authContext";
 
 interface SignUpForm {
   email: string;
@@ -20,28 +20,12 @@ const formSchema = z.object({
   fullName: z.string().max(100)
 })
 
-export default function SignUpForm({ router, supabase }: { router: AppRouterInstance, supabase: SupabaseClient }) {
-
+export default function SignUpForm() {
   const form = useForm({ schema: formSchema })
-
+  const { signUp } = useAuth()
   const onSubmit: SubmitHandler<SignUpForm> = async (data) => {
     try {
-      const resp = await supabase.auth.signUp({
-        email: data.email,
-        password: data.password,
-        options: {
-          emailRedirectTo: `${location.origin}/auth/callback`,
-          data: {
-            username: data.username,
-            full_name: data.fullName
-          }
-        }
-      })
-      if (resp.error) throw Error(resp.error.message)
-      if (resp.data) {
-        router.refresh()
-        router.push(`/${resp.data.user?.user_metadata.username}/generate`)
-      }
+      await signUp(data.email, data.password, data.username, data.fullName)
     } catch (error) {
       throw error
     }
