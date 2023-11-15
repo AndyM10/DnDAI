@@ -1,6 +1,6 @@
 'use client'
 import { Session, User } from "@supabase/supabase-js"
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import { browserClient } from "./browserClient";
 import { useRouter } from "next/navigation";
 
@@ -34,6 +34,23 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [session, setSession] = useState<Session | null>(null)
   const router = useRouter()
   const { supabase } = browserClient()
+
+  useEffect(() => {
+    authCheck()
+  }, [user, session, username])
+
+  const authCheck = async () => {
+    try {
+      const { data, error } = await supabase.auth.getSession()
+      if (data) {
+        setSession(data.session)
+        setUser(data.session?.user!)
+        setUsername(data.session?.user?.user_metadata.username!)
+      }
+    } catch (error) {
+      throw error
+    }
+  }
 
   const signIn = async (email: string, password: string) => {
     try {

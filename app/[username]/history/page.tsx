@@ -5,6 +5,7 @@ import StashCard, { StashCardProps } from "./StashCard"
 import { serverClient } from "@/lib/serverClient"
 import { SupabaseClient, User } from "@supabase/supabase-js"
 
+
 const getStash = async (supabase: SupabaseClient<Database>, user: User) => {
   try {
     const { data, error } = await supabase

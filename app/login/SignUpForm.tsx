@@ -3,7 +3,6 @@ import { Form, useForm } from "@/components/form/form";
 import { z } from "zod";
 import { SubmitHandler } from 'react-hook-form';
 import { Input } from "@/components/form/inputs";
-import { SupabaseClient } from "@supabase/supabase-js";
 import { useAuth } from "@/lib/authContext";
 
 interface SignUpForm {
