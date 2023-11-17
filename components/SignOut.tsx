@@ -6,13 +6,12 @@ import { useRouter } from "next/navigation"
 export function SignOut() {
   const { supabase } = browserClient()
   const router = useRouter()
-
-  const handleSignOut = async () => {
+  const signOut = async () => {
     await supabase.auth.signOut()
     router.refresh()
   }
 
   return (
-    <a onClick={async () => await handleSignOut()}>Logout</a>
+    <a onClick={() => signOut()}>Logout</a>
   )
-}
+} 

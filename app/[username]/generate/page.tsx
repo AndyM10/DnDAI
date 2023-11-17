@@ -70,21 +70,21 @@ export default function Page() {
             <label className="label text-xl">1. Choose your race</label>
             <div className="flex flex-row justify-evenly">
               {races.map((race) => (
-                <CheckIcon key={`${race}-input`} field='race' label={race} value={race} format='png' {...form.register('race')} />
+                <CheckIcon key={`${race}-input`} label={race} value={race} format='png' {...form.register('race')} />
               ))}
             </div>
             <div className="divider m-0" ></div>
             <label className="label text-xl">2. Choose your class</label>
             <div className="flex flex-row justify-evenly">
               {classes.map((role) => (
-                <CheckIcon key={`${role}-input`} field='race' label={role} value={role} format='jpeg' {...form.register('role')} />
+                <CheckIcon key={`${role}-input`} label={role} value={role} format='jpeg' {...form.register('role')} />
               ))}
             </div>
             <div className="divider m-0" ></div>
             <label className="label text-xl">3. Choose your art style</label>
             <div className="flex flex-wrap justify-evenly">
               {stlyes.map((style) => (
-                <CheckIcon key={`${style}-input`} field='style' label={style} value={style} format='png' {...form.register('style')} />
+                <CheckIcon key={`${style}-input`} label={style} value={style} format='png' {...form.register('style')} />
               ))}
             </div>
             <label className="label text-xl">4. Add your backstory</label>

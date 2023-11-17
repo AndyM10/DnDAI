@@ -1,9 +1,14 @@
-'use client'
+import { serverClient } from "@/lib/serverClient"
+import { cookies } from "next/headers"
 import Link from "next/link"
-import { useAuth } from "@/lib/authContext"
+import { SignOut } from "./SignOut"
 
-const NavBar = () => {
-  const { session, username, signOut } = useAuth()
+const NavBar = async () => {
+  const cookieStore = cookies()
+  const { supabase } = serverClient(cookieStore)
+  const { data: { session } } = await supabase.auth.getSession()
+  const username = session?.user.user_metadata.username
+
   return (
     <>
       <div className="navbar bg-base-100">
@@ -41,10 +46,10 @@ const NavBar = () => {
                       Profile
                     </a>
                   </li>
-                  <li><a onClick={() => signOut()}>Logout</a></li>
+                  <li><SignOut /></li>
                 </ul>
               </div> :
-              <a className="btn btn-primary" href="/login">Sign Up</a>
+              <a className="btn btn-primary" href="/login">Login</a>
           }
         </div>
       </div >

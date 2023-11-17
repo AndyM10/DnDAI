@@ -1,25 +1,23 @@
-'use client'
-import { useRouter } from 'next/navigation'
-import SignUpForm from './SignUpForm'
-import LoginForm from './LoginForm'
 
-export default function Page() {
-  const router = useRouter()
+import { serverClient } from "@/lib/serverClient";
+import LoginForm from "./LoginForm";
+import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
+
+export default async function Page() {
+  const cookieStore = cookies()
+  const { supabase } = serverClient(cookieStore)
+  const { data: { session } } = await supabase.auth.getSession()
+
+  if (session) {
+    redirect(`/${session.user.user_metadata.username}/generate`)
+  }
 
   return (
-    <>
-      <div className="flex flex-col w-full lg:flex-row m-4">
-        <div className="grid flex-grow rounded-box place-items-center">
-          <SignUpForm />
-        </div>
-        <div className="divider lg:divider-horizontal before:bg-primary after:bg-primary">
-          OR
-        </div>
-        <div className="grid flex-grow rounded-box place-items-center">
-          <LoginForm router={router} />
-        </div>
-      </div>
-    </>
+    <div className="m-4 min-h-[50vh] w-full max-w-sm lg:max-w-4xl">
+      <LoginForm />
+    </div>
   )
 }
+
 
