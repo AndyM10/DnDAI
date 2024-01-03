@@ -1,4 +1,15 @@
+import { serverClient } from "@/lib/serverClient"
+import { cookies } from "next/headers"
+import { redirect } from "next/navigation"
+
 export default async function Home() {
+  const cookieStore = cookies()
+  const { supabase } = serverClient(cookieStore)
+  const { data: { session } } = await supabase.auth.getSession()
+
+  if (session) {
+    redirect(`/${session.user.user_metadata.username}/generate`)
+  }
   return (
     <div className="hero min-h-screen bg-base-200">
       <div className="hero-content text-center">

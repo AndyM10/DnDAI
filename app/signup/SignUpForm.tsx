@@ -1,66 +1,60 @@
 'use client'
-
 import { Form, useForm } from "@/components/form/form";
-import { Input, Toggle } from "@/components/form/inputs";
-import { browserClient } from "@/lib/browserClient";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
-import { SubmitHandler } from "react-hook-form";
-import Image from 'next/image'
 import { z } from "zod";
+import { SubmitHandler } from 'react-hook-form';
+import { Input } from "@/components/form/inputs";
+import { browserClient } from "@/lib/browserClient";
+import Image from 'next/image'
 
-interface LoginForm {
+interface SignUpForm {
   email: string;
   password: string;
-  rememberMe: boolean;
+  username: string;
+  fullName: string;
 }
 
 const formSchema = z.object({
   email: z.string().email(),
   password: z.string().min(8).max(100),
-  rememberMe: z.boolean()
+  username: z.string().min(3).max(20),
+  fullName: z.string().max(100)
 })
 
-export default function LoginForm() {
+export default function SignUpForm() {
   const form = useForm({ schema: formSchema })
   const { supabase } = browserClient()
-  const router = useRouter()
-  const [isError, setIsError] = useState<Error>()
-
-
-  if (isError) throw isError
-
-  const onSubmit: SubmitHandler<LoginForm> = async (formData) => {
+  const onSubmit: SubmitHandler<SignUpForm> = async (formData) => {
     try {
-      const { data, error } = await supabase.auth.signInWithPassword({
+      const { data, error } = await supabase.auth.signUp({
         email: formData.email,
-        password: formData.password
+        password: formData.password,
+        options: {
+          emailRedirectTo: `${location.origin}/auth/confirm`,
+          data: {
+            username: formData.username,
+            full_name: formData.fullName
+          }
+        }
       })
-
       if (error) throw Error(error.message)
       if (!data) throw Error('No data returned')
 
-      const username = data.user.user_metadata.username
-
-      router.push(`/${username}/generate`)
-      window.location.reload()
-
     } catch (error) {
-      setIsError(new Error(`${error}`))
+      throw error
     }
   }
 
   return (
     <main className="grid bg-base-100 lg:aspect-[2/1] lg:grid-cols-2 rounded">
-      <figure className="pointer-events-none object-cover max-lg:hidden ">
-        <Image src={'/imgs/dwarflogin.png'} width={500} height={500} alt="loginimg" className="h-fit" />
+      <figure className="pointer-events-none object-cover max-lg:hidden">
+        <Image src={'/imgs/dwarflogin.png'} width={500} height={500} alt="loginimg" />
       </figure>
-      <Form form={form} onSubmit={onSubmit} className="flex flex-col justify-center gap-4 px-10 py-10 lg:px-16">
-        <Input label="Email" type="email" {...form.register('email')} />
-        <Input label="Password" type="password" {...form.register('password')} />
-        <Toggle label="Remember Me"  {...form.register('rememberMe')} />
-        <button className="btn btn-neutral w-full" type="submit">Submit</button>
-
+      <Form form={form} className="flex flex-col justify-center gap-4 px-10 py-10 lg:px-16" onSubmit={onSubmit}>
+        <Input label="fullName" type="text" {...form.register('fullName')} />
+        <Input label="username" type="text" {...form.register('username')} />
+        <Input label="email" type="email" {...form.register('email')} />
+        <Input label="password" type="password" {...form.register('password')} />
+        <button className="btn btn-neutral w-full mt-4" type="submit">Submit</button>
         <button type="button" className="btn w-full mt-4 ">
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -83,12 +77,8 @@ export default function LoginForm() {
           </svg>
           Login with Google
         </button>
-        <div className="label justify-end">
-          <a className="link-hover link label-text-alt" href="/signup">Create new account</a>
-        </div>
       </Form>
     </main>
   )
-
 }
 

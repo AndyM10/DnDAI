@@ -11,8 +11,8 @@ const config: ClientOptions = {
 }
 const openai = new OpenAi(config);
 const bodySchema = z.object({
-  race: z.enum(['human', 'elf', 'dwarf', 'dragonborn', 'drow', 'gnome', 'halfling', 'wood-elf']),
-  style: z.enum(['hyperrealism', 'anime', 'cartoon', 'pop-art', 'pixel-art', '3d', 'minimalist', 'isometric']),
+  race: z.enum(['Human', 'Elf', 'Dwarf', 'Dragonborn', 'Drow', 'Gnome', 'Halfling', 'Fire Genasi']),
+  style: z.enum(['hyperrealism', 'anime', 'pop-art', 'pixel-art', '3d', 'minimalist', 'isometric']),
   role: z.enum(['barbarian', 'sorcerer', 'rogue', 'cleric', 'druid', 'paladin', 'warlock']),
   story: z.string().max(500)
 })
@@ -38,6 +38,7 @@ export async function POST(request: Request) {
         the characters race is ${race},
         the art style should be ${style},
         the character is a ${role},
+        the character's backstory is: ${story}
 `
 
     const resp = await openai.images.generate({

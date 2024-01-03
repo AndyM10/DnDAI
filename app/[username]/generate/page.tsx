@@ -1,9 +1,9 @@
 'use client'
 import { Form, useForm } from "@/components/form/form";
-import { CheckIcon, TextArea } from "@/components/form/inputs";
+import { CheckIcon, RaceSelect, TextArea } from "@/components/form/inputs";
 import { z } from "zod";
-import { SubmitHandler } from "react-hook-form";
-import { useState } from "react";
+import { DefaultValues, SubmitHandler } from "react-hook-form";
+import React, { useState } from "react";
 import Loading from "./loading";
 import ImageContainer from "@/components/ImageContainer";
 import { Image } from "openai/resources";
@@ -16,29 +16,29 @@ export interface GenerationForm {
 }
 
 const formSchema = z.object({
-  race: z.enum(['human', 'elf', 'dwarf', 'dragonborn', 'drow', 'gnome', 'halfling', 'wood-elf']),
-  style: z.enum(['hyperrealism', 'anime', 'cartoon', 'pop-art', 'pixel-art', '3d', 'minimalist', 'isometric']),
+  race: z.enum(['Human', 'Elf', 'Dwarf', 'Dragonborn', 'Drow', 'Gnome', 'Halfling', 'Fire Genasi']),
+  style: z.enum(['hyperrealism', 'anime', 'pop-art', 'pixel-art', '3d', 'minimalist', 'isometric']),
   role: z.enum(['barbarian', 'sorcerer', 'rogue', 'cleric', 'druid', 'paladin', 'warlock']),
   story: z.string().max(500)
 })
 
-
 export default function Page() {
-  const races = ['human', 'elf', 'dwarf', 'dragonborn', 'drow', 'gnome', 'halfling', 'wood-elf']
+  const races = ['Human', 'Elf', 'Dwarf', 'Dragonborn', 'Drow', 'Gnome', 'Halfling', 'Fire Genasi']
   const classes = ['barbarian', 'sorcerer', 'rogue', 'cleric', 'druid', 'paladin', 'warlock']
-  const stlyes = ['hyperrealism', 'anime', 'cartoon', 'pop-art', 'pixel-art', '3d', 'minimalist', 'isometric']
+  const stlyes = ['hyperrealism', 'anime', 'pop-art', 'pixel-art', '3d', 'minimalist', 'isometric']
   const url = `${process.env.NEXT_PUBLIC_API_URL}/api/generate`
   const form = useForm({ schema: formSchema })
   const [images, setImages] = useState<Image[]>([])
   const [formData, setFormData] = useState<GenerationForm>()
   const [loading, setLoading] = useState(false)
   const [isError, setIsError] = useState<Error>()
-
+  const { control } = form
 
   if (isError) throw isError
 
   const onSubmit: SubmitHandler<GenerationForm> = async (data) => {
     try {
+      console.log(data)
       setLoading(true)
       setFormData(data)
       const image = await fetch(url, {
@@ -57,6 +57,7 @@ export default function Page() {
     }
   }
 
+
   const closeContainer = () => {
     setImages([])
     setFormData(undefined)
@@ -64,27 +65,23 @@ export default function Page() {
 
   return (
     <div className="flex flex-col items-center p-4">
-      <div className="max-w-screen-lg w-full border-black border rounded-lg">
+      <div className="max-w-screen-lg w-full bg-base-100 drop-shadow-md rounded-lg">
         <div className="p-8">
           <Form form={form} onSubmit={onSubmit} >
             <label className="label text-xl">1. Choose your race</label>
-            <div className="flex flex-row justify-evenly">
-              {races.map((race) => (
-                <CheckIcon key={`${race}-input`} label={race} value={race} format='png' {...form.register('race')} />
-              ))}
-            </div>
+            <RaceSelect options={races} control={control as any} label="What race do you play?"{...form.register('race')} />
             <div className="divider m-0" ></div>
             <label className="label text-xl">2. Choose your class</label>
             <div className="flex flex-row justify-evenly">
               {classes.map((role) => (
-                <CheckIcon key={`${role}-input`} label={role} value={role} format='jpeg' {...form.register('role')} />
+                <CheckIcon key={`${role}-input`} field="classes" label={role} value={role} format='jpeg' {...form.register('role')} />
               ))}
             </div>
             <div className="divider m-0" ></div>
             <label className="label text-xl">3. Choose your art style</label>
             <div className="flex flex-wrap justify-evenly">
               {stlyes.map((style) => (
-                <CheckIcon key={`${style}-input`} label={style} value={style} format='png' {...form.register('style')} />
+                <CheckIcon key={`${style}-input`} field="styles" label={style} value={style} format='png' {...form.register('style')} />
               ))}
             </div>
             <label className="label text-xl">4. Add your backstory</label>

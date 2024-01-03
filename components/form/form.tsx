@@ -1,5 +1,5 @@
 import { ComponentProps } from 'react'
-import { FieldValues, FormProvider, SubmitHandler, UseFormReturn, UseFormProps as UseHookFormProps, useFormContext, useForm as useHookForm } from 'react-hook-form'
+import { DefaultValues, FieldValues, FormProvider, SubmitHandler, UseFormReturn, UseFormProps as UseHookFormProps, useFormContext, useForm as useHookForm } from 'react-hook-form'
 import { TypeOf, ZodSchema } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 
@@ -11,11 +11,14 @@ interface UseFormProps<T extends ZodSchema<any>>
 
 export const useForm = <T extends ZodSchema<any>>({
   schema,
+  defaultValues,
   ...formConfig
 }: UseFormProps<T>) => useHookForm({
   ...formConfig,
+  defaultValues: defaultValues as DefaultValues<TypeOf<T>>,
   resolver: zodResolver(schema)
 })
+
 interface FormProps<T extends FieldValues = any>
   extends Omit<ComponentProps<'form'>, 'onSubmit'> {
   form: UseFormReturn<T>;
