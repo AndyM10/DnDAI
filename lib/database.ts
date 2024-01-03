@@ -9,32 +9,41 @@ export type Json =
 export interface Database {
   public: {
     Tables: {
-      images: {
+      history: {
         Row: {
           created_at: string
           id: number
-          image_data: Json
-          image_url: string
-          username: string
+          image_data: Json | null
+          image_url: string | null
+          user: string
         }
         Insert: {
           created_at?: string
           id?: number
-          image_data: Json
-          image_url: string
-          username: string
+          image_data?: Json | null
+          image_url?: string | null
+          user: string
         }
         Update: {
           created_at?: string
           id?: number
-          image_data?: Json
-          image_url?: string
-          username?: string
+          image_data?: Json | null
+          image_url?: string | null
+          user?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "history_user_fkey"
+            columns: ["user"]
+            isOneToOne: true
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          }
+        ]
       }
       profiles: {
         Row: {
+          avatar_url: string | null
           credits: number | null
           full_name: string | null
           id: string
@@ -42,6 +51,7 @@ export interface Database {
           username: string | null
         }
         Insert: {
+          avatar_url?: string | null
           credits?: number | null
           full_name?: string | null
           id: string
@@ -49,6 +59,7 @@ export interface Database {
           username?: string | null
         }
         Update: {
+          avatar_url?: string | null
           credits?: number | null
           full_name?: string | null
           id?: string
@@ -59,6 +70,7 @@ export interface Database {
           {
             foreignKeyName: "profiles_id_fkey"
             columns: ["id"]
+            isOneToOne: true
             referencedRelation: "users"
             referencedColumns: ["id"]
           }

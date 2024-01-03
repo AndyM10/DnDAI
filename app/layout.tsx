@@ -17,7 +17,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={inter.className} >
+      <body className={`${inter.className} min-h-screen items-center justify-center bg-base-200`} >
         <NavBar />
         <Toaster />
         {children}

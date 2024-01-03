@@ -1,18 +1,18 @@
 
-import { Database } from "@/lib/database"
-import { createServerComponentClient } from "@supabase/auth-helpers-nextjs"
 import { cookies } from "next/headers"
 import { NextResponse } from "next/server"
 import { z } from "zod"
-import { Configuration, OpenAIApi } from "openai";
+import OpenAi, { ClientOptions } from 'openai';
+import { serverClient } from "@/lib/serverClient";
+import { AuthError } from "@supabase/supabase-js";
 
-const config = new Configuration({
-  apiKey: process.env.NEXT_PUBLIC_OPEN_AI_KEY,
-})
-const openai = new OpenAIApi(config);
+const config: ClientOptions = {
+  apiKey: process.env.OPEN_AI_KEY,
+}
+const openai = new OpenAi(config);
 const bodySchema = z.object({
-  race: z.enum(['human', 'elf', 'dwarf', 'dragonborn', 'drow', 'gnome', 'halfling', 'wood-elf']),
-  style: z.enum(['hyperrealism', 'anime', 'cartoon', 'pop-art', 'pixel-art', '3d', 'minimalist']),
+  race: z.enum(['Human', 'Elf', 'Dwarf', 'Dragonborn', 'Drow', 'Gnome', 'Halfling', 'Fire Genasi']),
+  style: z.enum(['hyperrealism', 'anime', 'pop-art', 'pixel-art', '3d', 'minimalist', 'isometric']),
   role: z.enum(['barbarian', 'sorcerer', 'rogue', 'cleric', 'druid', 'paladin', 'warlock']),
   story: z.string().max(500)
 })
@@ -21,45 +21,38 @@ export async function POST(request: Request) {
 
   try {
     const cookieStore = cookies()
-    const supabase = createServerComponentClient<Database>({
-      cookies: () => cookieStore
-    })
-    const { data: { session } } = await supabase.auth.getSession()
+    const { supabase } = serverClient(cookieStore)
+
+    const { data: { session }, error } = await supabase.auth.getSession()
 
     if (!session?.user || !session?.access_token) {
-      return NextResponse.json({ error: "No session found" }, {
-        status: 401,
-        headers: {
-          'Access-Control-Allow-Origin': '*',
-          'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-          'Access-Control-Allow-Headers': 'Content-Type, Authorization'
-        }
+      throw new AuthError('No session found')
+    }
 
-      })
+    if (error) {
+      throw error
     }
 
     const { race, style, story, role } = bodySchema.parse(await request.json())
-    const prompt = `${style} concept art of a ${race} ${role} character, high fantasy, dungeons and dragons, inspired by the best fantasy ${style} artists, backstory for character is ${story} `
-    const resp = await openai.createImage({
+    const prompt = `Generate a concept art for a Dungeons & Dragons character based on the following parameters:
+        the characters race is ${race},
+        the art style should be ${style},
+        the character is a ${role},
+        the character's backstory is: ${story}
+`
+
+    const resp = await openai.images.generate({
       prompt,
+      model: "dall-e-3",
       n: 1,
-      size: "512x512"
+      size: "1024x1024"
     })
 
-
-    if (resp.status !== 200) {
-      return NextResponse.json({ error: `OpenAI API error: ${resp.statusText}` }, {
-        status: 500,
-        headers: {
-          'Access-Control-Allow-Origin': '*',
-          'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-          'Access-Control-Allow-Headers': 'Content-Type, Authorization'
-        }
-
-      })
+    if (!resp) {
+      throw new Error('OpenAI API error: ' + resp)
     }
 
-    const data = resp.data.data
+    const data = resp.data
 
     return NextResponse.json(data, {
       status: 200,
@@ -70,25 +63,35 @@ export async function POST(request: Request) {
       }
     })
   } catch (error) {
-    if (error instanceof z.ZodError) {
-      return NextResponse.json({ error: error.errors }, {
-        status: 400,
-        headers: {
-          'Access-Control-Allow-Origin': '*',
-          'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-          'Access-Control-Allow-Headers': 'Content-Type, Authorization'
-        }
-      })
+
+    switch (error) {
+      case error instanceof AuthError:
+        return NextResponse.json({ error: `Not authorized: ${error}` }, {
+          status: 401,
+          headers: {
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+            'Access-Control-Allow-Headers': 'Content-Type, Authorization'
+          }
+        })
+      case error instanceof z.ZodError:
+        return NextResponse.json({ error: error }, {
+          status: 400,
+          headers: {
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+            'Access-Control-Allow-Headers': 'Content-Type, Authorization'
+          }
+        })
+      default:
+        return NextResponse.json({ error: error }, {
+          status: 500,
+          headers: {
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+            'Access-Control-Allow-Headers': 'Content-Type, Authorization'
+          }
+        })
     }
-    return NextResponse.json({ error: error }, {
-      status: 500,
-      headers: {
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-        'Access-Control-Allow-Headers': 'Content-Type, Authorization'
-      }
-
-    })
   }
-
 }

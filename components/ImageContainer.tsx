@@ -1,14 +1,13 @@
 import { GenerationForm } from "@/app/[username]/generate/page";
-import { ImagesResponseDataInner } from "openai";
-/* ts-ignore */
+import { Image } from "openai/resources";
+
 interface ImageContainerProps {
   formData: GenerationForm;
-  image: ImagesResponseDataInner[];
+  image: Image[];
   close: () => void;
 }
 
-
-export default async function ImageContainer({ image, close, formData }: ImageContainerProps) {
+export default function ImageContainer({ image, close, formData }: ImageContainerProps) {
 
   const url = `${process.env.NEXT_PUBLIC_API_URL}/api/save`
 

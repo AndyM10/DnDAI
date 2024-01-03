@@ -1,23 +1,15 @@
-import { Database } from "@/lib/database"
-import { createServerComponentClient } from "@supabase/auth-helpers-nextjs"
+import { serverClient } from "@/lib/serverClient"
 import { cookies } from "next/headers"
 import { redirect } from "next/navigation"
 
 export default async function Home() {
-
   const cookieStore = cookies()
-  const supabase = createServerComponentClient<Database>({
-    cookies: () => cookieStore
-  })
-
+  const { supabase } = serverClient(cookieStore)
   const { data: { session } } = await supabase.auth.getSession()
 
-  //if active session route to /[username]
   if (session) {
     redirect(`/${session.user.user_metadata.username}/generate`)
-
   }
-
   return (
     <div className="hero min-h-screen bg-base-200">
       <div className="hero-content text-center">

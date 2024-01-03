@@ -1,23 +1,34 @@
-import { Database } from "@/lib/database"
-import { Session, createServerComponentClient } from "@supabase/auth-helpers-nextjs"
+import { serverClient } from "@/lib/serverClient"
+import { AuthError, Session, SupabaseClient, } from "@supabase/supabase-js"
 import { cookies } from "next/headers"
 import { NextResponse } from "next/server"
 import { z } from "zod"
 
-const getUserName = (session: Session) => session.user.user_metadata.username
-
+const getUserId = (session: Session) => session.user.id
 const getBufferFromUrl = async (url: string) => {
   const res = await fetch(url)
   const buffer = await res.arrayBuffer()
-
   return buffer
 }
 
+const bucketUpload = async (
+  image: string,
+  supabase: SupabaseClient,
+  id: string
+) => {
+  const buffer = await getBufferFromUrl(image)
+  const { data, error } = await supabase.storage.from('stash').upload(`${id}/${Date.now()}.png`, buffer)
+
+  if (error) {
+    throw error
+  }
+  return { data }
+}
 const bodySchema = z.object({
   image: z.string().url(),
   formData: z.object({
-    race: z.enum(['human', 'elf', 'dwarf', 'dragonborn', 'drow', 'gnome', 'halfling', 'wood-elf']),
-    style: z.enum(['hyperrealism', 'anime', 'cartoon', 'pop-art', 'pixel-art', '3d', 'minimalist']),
+    race: z.enum(['Human', 'Elf', 'Dwarf', 'Dragonborn', 'Drow', 'Gnome', 'Halfling', 'Fire Genasi']),
+    style: z.enum(['hyperrealism', 'anime', 'pop-art', 'pixel-art', '3d', 'minimalist', 'isometric']),
     role: z.enum(['barbarian', 'sorcerer', 'rogue', 'cleric', 'druid', 'paladin', 'warlock']),
     story: z.string().max(500)
   })
@@ -25,47 +36,26 @@ const bodySchema = z.object({
 
 export async function POST(request: Request) {
   try {
-
     const cookieStore = cookies()
-    const supabase = createServerComponentClient<Database>({
-      cookies: () => cookieStore
-    })
-
+    const { supabase } = serverClient(cookieStore)
     const { data: { session } } = await supabase.auth.getSession()
 
     if (!session?.user || !session?.access_token) {
-      return NextResponse.json({ error: "No session found" }, {
-        status: 401,
-        headers: {
-          'Access-Control-Allow-Origin': '*',
-          'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-          'Access-Control-Allow-Headers': 'Content-Type, Authorization'
-        }
-      })
+      throw new AuthError('No session found')
     }
 
-    const username = getUserName(session)
     const { image, formData } = bodySchema.parse(await request.json())
-    const buffer = await getBufferFromUrl(image)
-
-    const { data, error } = await supabase.storage.from('stash').upload(`${username}/${Date.now()}.png`, buffer)
-
-    if (error) {
-      return NextResponse.json({ error: error }, {
-        status: 500,
-        headers: {
-          'Access-Control-Allow-Origin': '*',
-          'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-          'Access-Control-Allow-Headers': 'Content-Type, Authorization'
-        }
-      })
-    }
-
-    await supabase.from('images').insert({
+    const id = getUserId(session)
+    const { data } = await bucketUpload(image, supabase, id)
+    const { error } = await supabase.from('history').insert({
       image_url: data.path,
       image_data: formData,
-      username,
+      user: id
     })
+
+    if (error) {
+      throw error
+    }
 
     return NextResponse.json({
       status: 200,
@@ -76,24 +66,35 @@ export async function POST(request: Request) {
       }
     })
   } catch (error) {
-    if (error instanceof z.ZodError) {
-      return NextResponse.json({ error: error.errors }, {
-        status: 400,
-        headers: {
-          'Access-Control-Allow-Origin': '*',
-          'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-          'Access-Control-Allow-Headers': 'Content-Type, Authorization'
-        }
-      })
-    }
-    return NextResponse.json({ error: error }, {
-      status: 500,
-      headers: {
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-        'Access-Control-Allow-Headers': 'Content-Type, Authorization'
-      }
 
-    })
+    switch (error) {
+      case error instanceof AuthError:
+        return NextResponse.json({ error: `Not authorized: ${error}` }, {
+          status: 401,
+          headers: {
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+            'Access-Control-Allow-Headers': 'Content-Type, Authorization'
+          }
+        })
+      case error instanceof z.ZodError:
+        return NextResponse.json({ error: error }, {
+          status: 400,
+          headers: {
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+            'Access-Control-Allow-Headers': 'Content-Type, Authorization'
+          }
+        })
+      default:
+        return NextResponse.json({ error: error }, {
+          status: 500,
+          headers: {
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+            'Access-Control-Allow-Headers': 'Content-Type, Authorization'
+          }
+        })
+    }
   }
 }
