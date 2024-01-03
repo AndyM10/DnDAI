@@ -43,21 +43,18 @@ export default async function Page() {
   if (!user) {
     redirect('/')
   }
-
   const stash = await getStash(supabase, user)
 
   return (
     <div className="flex flex-col items-center">
-      <div>
-        <h1 className="label text-3xl">Your Stash</h1>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mx-4">
-          {stash.map(async (image, index) => {
-            const { signedUrl } = await getImageUrl(supabase, image.image_url!)
-            return (
-              <StashCard key={index} imageDate={image.created_at} imageData={image.image_data as StashCardProps['imageData']} url={signedUrl} />
-            )
-          })}
-        </div>
+      <h1 className="label text-3xl">Your Stash</h1>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mx-4">
+        {stash.map(async (image, index) => {
+          const { signedUrl } = await getImageUrl(supabase, image.image_url!)
+          return (
+            <StashCard key={index} imageDate={image.created_at} imageData={image.image_data as StashCardProps['imageData']} url={signedUrl} />
+          )
+        })}
       </div>
     </div>
   )
