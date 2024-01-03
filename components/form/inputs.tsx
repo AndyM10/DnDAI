@@ -99,3 +99,5 @@ export const RaceSelect = forwardRef<HTMLSelectElement, RaceSelectProps>(({ labe
     </div >
   )
 })
+
+RaceSelect.displayName = 'RaceSelect'
