@@ -17,6 +17,8 @@ const bodySchema = z.object({
   story: z.string().max(500)
 })
 
+export const maxDuration = 60
+
 export async function POST(request: Request) {
 
   try {
