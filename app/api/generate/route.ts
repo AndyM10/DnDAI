@@ -40,6 +40,7 @@ export async function POST(request: Request) {
         the character is a ${role},
         the character's backstory is: ${story}
 `
+    console.info('OpenAI API request: ', prompt)
 
     const resp = await openai.images.generate({
       prompt,
@@ -51,6 +52,8 @@ export async function POST(request: Request) {
     if (!resp) {
       throw new Error('OpenAI API error: ' + resp)
     }
+
+    console.info('OpenAI API response: ', resp)
 
     const data = resp.data
 
