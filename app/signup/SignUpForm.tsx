@@ -5,6 +5,7 @@ import { SubmitHandler } from 'react-hook-form';
 import { Input } from "@/components/form/inputs";
 import { browserClient } from "@/lib/browserClient";
 import Image from 'next/image'
+import { useRouter } from "next/navigation";
 
 interface SignUpForm {
   email: string;
@@ -22,6 +23,7 @@ const formSchema = z.object({
 
 export default function SignUpForm() {
   const form = useForm({ schema: formSchema })
+  const router = useRouter()
   const { supabase } = browserClient()
   const onSubmit: SubmitHandler<SignUpForm> = async (formData) => {
     try {
@@ -38,6 +40,8 @@ export default function SignUpForm() {
       })
       if (error) throw Error(error.message)
       if (!data) throw Error('No data returned')
+
+      router.push('/')
 
     } catch (error) {
       throw error
