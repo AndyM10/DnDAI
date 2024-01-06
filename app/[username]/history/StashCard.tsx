@@ -15,30 +15,35 @@ export default function StashCard({ imageDate, imageData, url }: StashCardProps)
   const date = new Date(imageDate)
 
   return (
-    <div className="max-w-lg p-6 bg-base-100 shadow-xl mt-6 flex flex-col rounded">
+    <div className="max-w-lg p-4 bg-base-100 shadow-xl mt-6 flex flex-col rounded">
       <div className="text-xl font-semibold">
         {imageData.race} {imageData.role}
       </div>
       <div className="divider mt-2"></div>
       <div className="bg-base-100 ">
-        <Image priority={true} src={url} width={512} height={512} alt={imageData.race + imageData.role} />
+        <Image src={url} width={512} height={512} alt={imageData.race + imageData.role} />
       </div>
-      <div className="my-2 bg-gray-600 rounded">
-        <ul className="p-2">
+      <div className="my-2">
+        <div className="flex justify-evenly">
           {
             Object.entries(imageData).map(([key, value]) => {
               if (value === "") return
-              return (
-                <li key={key} className="font-semibold">
-                  {key}: {value}
-                </li>
+              if (key === "race" || key === "role" || key === "style") return (
+                <div key={key} className="badge badge-primary inline-block mx-4">
+                  {value}
+                </div>
               )
             })
           }
-          <li className="font-semibold">
-            created: {date.toUTCString()}
-          </li>
-        </ul>
+
+        </div>
+        <div className="divider my-2"></div>
+        <div className="text-base-content">
+          {imageData.story}
+        </div>
+        <div className="my-2 font-thin">
+          created: {date.toUTCString()}
+        </div>
       </div>
     </div >
   )
