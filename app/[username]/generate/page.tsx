@@ -68,7 +68,7 @@ export default function Page() {
       <div className="max-w-screen-lg w-full bg-base-100 drop-shadow-md rounded-lg">
         <div className="p-8">
           <Form form={form} onSubmit={onSubmit} >
-            <label className="label text-xl">1. Choose your race</label>
+            <label className="label text-xl w-auto">1. Choose your race</label>
             <RaceSelect options={races} control={control as any} label="What race do you play?"{...form.register('race')} />
             <div className="divider m-0" ></div>
             <label className="label text-xl">2. Choose your class</label>
