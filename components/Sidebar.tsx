@@ -1,18 +1,15 @@
 import Image from "next/image";
 
-interface SidebarProps {
-  username: string
-}
-export const Sidebar = ({ username }: SidebarProps) => {
+export const Sidebar = () => {
 
   return (
-    <aside className="drawer-side z-10 lg:sticky">
+    <aside className="drawer-side z-10 lg:stick">
       <label htmlFor="my-drawer" className="drawer-overlay lg:sticky"></label>
-      <nav className="flex min-h-screen w-72 flex-col gap-2 overflow-y-auto bg-base-100 px-6 py-10">
+      <nav className="flex min-h-screen w-72 flex-col bg-base-100 gap-2 overflow-y-auto px-6 py-10">
         <ul className="menu">
           <li>
             <a href="generate">
-              <Image src="https://unpkg.com/heroicons/20/solid/home.svg" className="h-5 w-5 white" width={5} height={5} alt=" GenerateIcon" />
+              <Image src="https://unpkg.com/heroicons/20/solid/home.svg" className="h-5 w-5" width={5} height={5} alt=" GenerateIcon" />
               Generate!
             </a>
           </li>
