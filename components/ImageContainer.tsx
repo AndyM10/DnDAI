@@ -1,4 +1,4 @@
-import { GenerationForm } from "@/app/[username]/generate/page";
+import { GenerationForm } from "@/app/(dashboard)/[username]/generate/page";
 import { Image } from "openai/resources";
 
 interface ImageContainerProps {
