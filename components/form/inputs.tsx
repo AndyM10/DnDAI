@@ -2,7 +2,7 @@ import { ComponentProps, forwardRef, useState } from "react";
 import { FieldError } from "./form";
 import Image from 'next/image'
 import { useController, type Control } from "react-hook-form";
-import { GenerationForm } from "@/app/[username]/generate/page";
+import { GenerationForm } from "@/app/(dashboard)/[username]/generate/page";
 
 interface InputProps extends ComponentProps<"input"> {
   label: string;
