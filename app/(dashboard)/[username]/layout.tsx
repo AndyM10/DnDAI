@@ -4,14 +4,11 @@ import { serverClient } from "@/lib/serverClient";
 import '../../globals.css'
 import { Sidebar } from "@/components/Sidebar";
 import DashBoardNav from "@/components/DashboardNav";
-import { headers } from "next/headers";
 
 export default async function UserDashboardLayout({ children }: { children: React.ReactNode }) {
   const cookieStore = cookies()
   const { supabase } = serverClient(cookieStore)
   const { data: { user } } = await supabase.auth.getUser()
-  const heads = headers()
-  console.log(heads.get('next-url'))
   if (!user) {
     redirect('/')
   }
