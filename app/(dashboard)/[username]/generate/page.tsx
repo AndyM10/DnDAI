@@ -49,6 +49,8 @@ export default function Page() {
       })
 
       setLoading(false)
+
+      if (!image.ok) throw new Error(`${image.status} ${image.statusText}`)
       setImages(await image.json())
 
     } catch (error) {
