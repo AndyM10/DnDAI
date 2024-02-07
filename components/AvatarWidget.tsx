@@ -14,7 +14,6 @@ export default function AvatarWidget({ supabase, user, onUpload }: {
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null)
 
   useEffect(() => {
-    console.log('WIDGET', user.avatar_url)
     if (user.avatar_url) getAvatar(user.avatar_url)
   }, [user.avatar_url])
 
@@ -63,7 +62,7 @@ export default function AvatarWidget({ supabase, user, onUpload }: {
         <div className="w-48 rounded">
           {avatarUrl ?
             <Image src={avatarUrl} width={48} height={48} alt='Profile Pic' /> :
-            <img src="https://daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" />
+            <div className="skeleton w-48 h-48"></div>
           }
         </div>
       </div>

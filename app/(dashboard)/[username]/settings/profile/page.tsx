@@ -29,20 +29,14 @@ export default function Page() {
   }, [])
 
   async function updateProfile(avatar_url: string) {
-    // Update the user profile
-    //
-    console.log('UPDATING PROFILE', avatar_url)
-
     const updates = {
       ...user,
-      updated_at: new Date().toString(),
+      updated_at: new Date().toISOString(),
       avatar_url
     } as User
 
-    console.log('UPDATES', updates)
 
-    const { data, error } = await supabase.from('profiles').upsert(updates)
-    console.log('DATA', data)
+    const { error } = await supabase.from('profiles').upsert(updates)
     if (error) {
       alert('Error updating profile')
     } else {

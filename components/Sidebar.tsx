@@ -9,7 +9,6 @@ export const Sidebar = async () => {
   const { data: { user } } = await supabase.auth.getUser()
   const username = user?.user_metadata.username
 
-  console.log(username)
 
   return (
     <aside className="drawer-side z-10 lg:stick">

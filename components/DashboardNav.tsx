@@ -1,4 +1,5 @@
 'use client'
+
 import { Bars3Icon } from '@heroicons/react/20/solid'
 import { SignOut } from './SignOut'
 import { usePathname } from 'next/navigation'
