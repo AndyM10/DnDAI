@@ -1,10 +1,11 @@
+'use client'
 import { Bars3Icon } from '@heroicons/react/20/solid'
 import { SignOut } from './SignOut'
-interface DashBoardNavProps {
-  title: string
-}
+import { usePathname } from 'next/navigation'
 
-const DashBoardNav = async ({ title }: DashBoardNavProps) => {
+
+const DashBoardNav = () => {
+  const title = usePathname()
 
   return (
     <header className="col-span-12 flex items-center gap-2 lg:gap-4">

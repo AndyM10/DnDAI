@@ -19,7 +19,7 @@ export default async function UserDashboardLayout({ children }: { children: Reac
         <input id="my-drawer" type="checkbox" className="drawer-toggle" />
         <Sidebar />
         <main className="drawer-content grid grid-cols-12 grid-rows-[min-content] gap-y-12 lg:gap-x-12 lg:p-10">
-          <DashBoardNav title="Generate!" />
+          <DashBoardNav />
           {children}
         </main>
       </body>

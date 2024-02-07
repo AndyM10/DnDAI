@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint --fix"
+    "lint": "next lint --fix",
+    "generate": "npx --yes supabase gen types typescript --project-id uaswimwvucsqybhvzisx --schema public > ./lib/database.ts"  
   },
   "dependencies": {
     "@heroicons/react": "^2.1.1",
