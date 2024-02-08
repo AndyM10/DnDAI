@@ -29,7 +29,7 @@ export default function StashCard({ imageDate, imageData, url }: StashCardProps)
             Object.entries(imageData).map(([key, value]) => {
               if (value === "") return
               if (key === "race" || key === "role" || key === "style") return (
-                <div key={key} className="badge badge-primary inline-block mx-4">
+                <div key={key} className="badge badge-sm badge-primary inline-block mx-4 ">
                   {value}
                 </div>
               )
