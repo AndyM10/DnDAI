@@ -15,7 +15,7 @@ export default function StashCard({ imageDate, imageData, url }: StashCardProps)
   const date = new Date(imageDate)
 
   return (
-    <div className="max-w-lg p-4 bg-base-100 shadow-xl mt-6 flex flex-col rounded">
+    <div className="max-w-[512px] p-4 bg-base-100 shadow-xl mt-6 flex flex-col rounded">
       <div className="text-xl font-semibold">
         {imageData.race} {imageData.role}
       </div>
@@ -38,10 +38,10 @@ export default function StashCard({ imageDate, imageData, url }: StashCardProps)
 
         </div>
         <div className="divider my-2"></div>
-        <div className="text-base-content">
+        <div className="text-base-content overflow-y-scroll relative">
           {imageData.story}
         </div>
-        <div className="my-2 font-thin">
+        <div className="my-2 font-thin relative">
           created: {date.toUTCString()}
         </div>
       </div>
