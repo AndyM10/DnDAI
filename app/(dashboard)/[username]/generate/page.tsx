@@ -2,7 +2,7 @@
 import { Form, useForm } from "@/components/form/form";
 import { CheckIcon, RaceSelect, TextArea } from "@/components/form/inputs";
 import { z } from "zod";
-import { DefaultValues, SubmitHandler } from "react-hook-form";
+import { SubmitHandler } from "react-hook-form";
 import React, { useState } from "react";
 import Loading from "./loading";
 import ImageContainer from "@/components/ImageContainer";

@@ -45,7 +45,7 @@ export default async function Page() {
 
   return (
     <div className="col-span-12 flex flex-col items-center p-4">
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 gap-6">
         {stash.map((image, index) => {
           return (
             <StashCard key={index} imageDate={image.created_at} imageData={image.image_data as StashCardProps['imageData']} url={image.image_url!} />
