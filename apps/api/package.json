@@ -1,0 +1,19 @@
+{
+  "name": "api",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "build": "tsc"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "openai": "4.17.3",
+    "ts-node": "^10.9.2",
+    "typescript": "~5.3.3"
+  },
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.133"
+  }
+}
