@@ -4,7 +4,8 @@
   "description": "",
   "scripts": {
     "dev": "pnpm --filter dndai dev",
-    "synth": "pnpm --filter infra cdk synth"
+    "synth": "pnpm --filter infra cdk synth",
+    "build": "pnpm --filter api build"
   },
   "keywords": [],
   "author": "",
