@@ -1,4 +1,0 @@
-{
-  "/(dashboard)/[username]/generate/page": "app/(dashboard)/[username]/generate/page.js",
-  "/(dashboard)/[username]/settings/profile/page": "app/(dashboard)/[username]/settings/profile/page.js"
-}
