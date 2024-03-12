@@ -26,7 +26,7 @@ export default function Page() {
   const races = ['Human', 'Elf', 'Dwarf', 'Dragonborn', 'Drow', 'Gnome', 'Halfling', 'Fire Genasi']
   const classes = ['barbarian', 'sorcerer', 'rogue', 'cleric', 'druid', 'paladin', 'warlock']
   const stlyes = ['hyperrealism', 'anime', 'pop-art', 'pixel-art', '3d', 'minimalist', 'isometric']
-  const url = `${process.env.NEXT_PUBLIC_API_URL}/api/generate`
+  const url = `${process.env.NEXT_PUBLIC_GENERATE_API_URL}`
   const form = useForm({ schema: formSchema })
   const [images, setImages] = useState<Image[]>([])
   const [formData, setFormData] = useState<GenerationForm>()

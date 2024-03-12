@@ -10,21 +10,24 @@ export class DnDStack extends cdk.Stack {
 
     const generateFunction = new nodefunction.NodejsFunction(this, 'GenerateFunction', {
       entry: path.join(__dirname, '../../api/src/generate.ts'),
+      timeout: cdk.Duration.seconds(20),
       environment: {
-        OPENAI_API_KEY: "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"
+        OPENAI_API_KEY: process.env.OPENAI_API_KEY || ''
       }
     })
 
     const functionUrl = generateFunction.addFunctionUrl({
       authType: lambda.FunctionUrlAuthType.NONE,
       cors: {
-        allowedHeaders: ['*'],
-        allowedMethods: [lambda.HttpMethod.POST]
+        allowedOrigins: ['*'],
+        allowedHeaders: ['content-type', 'authorization'],
+        allowedMethods: [lambda.HttpMethod.POST],
+        allowCredentials: true
       }
     })
 
     new cdk.CfnOutput(this, 'functionUrl', {
-      value: functionUrl.toString()
+      value: functionUrl.url.toString()
     })
   }
 }

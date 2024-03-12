@@ -8,8 +8,7 @@ interface ImageContainerProps {
 }
 
 export default function ImageContainer({ image, close, formData }: ImageContainerProps) {
-
-  const url = `${process.env.NEXT_PUBLIC_API_URL}/api/save`
+  const url = `${process.env.NEXT_PUBLIC_SAVE_API_URL}/api/save`
 
   const saveImage = async () => {
     try {
