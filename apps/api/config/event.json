@@ -1,0 +1,6 @@
+{
+  "body": "{\"race\": \"Human\",\"role\": \"barbarian\",\"style\": \"isometric\",\"story\": \"some test story!\"}",
+  "headers": {
+    "content-type": "application/json"
+  }
+}

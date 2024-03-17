@@ -29,8 +29,13 @@ yarn-error.log*
 
 # vercel
 .vercel
+.next/
 
 # typescript
 *.tsbuildinfo
 next-env.d.ts
 
+node_modules/
+
+.github/act
+./apps/api/config/env.json
