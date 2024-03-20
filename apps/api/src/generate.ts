@@ -3,6 +3,7 @@ import httpJsonBodyParser from "@middy/http-json-body-parser"
 import { APIGatewayProxyEventV2, APIGatewayProxyResultV2, Context } from "aws-lambda"
 import OpenAI from "openai"
 import { z } from "zod"
+import { supabaseClient } from "./lib/supabase"
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY
@@ -16,10 +17,15 @@ const bodySchema = z.object({
 })
 
 const lambda = async (event: APIGatewayProxyEventV2, context: Context) => {
-  const { body } = event
+  const { body, headers } = event
 
   try {
     if (!body) throw new Error('No Body Found')
+    console.log(body, event, context)
+    console.log(process.env)
+    const auth = headers['Authorization']
+    console.log('AUTH', auth)
+    const { supabase } = supabaseClient()
     const userRequest = bodySchema.parse(body)
     const { race, style, story, role } = userRequest
 
@@ -59,6 +65,5 @@ const lambda = async (event: APIGatewayProxyEventV2, context: Context) => {
 
 
 export const handler = middy<APIGatewayProxyEventV2, APIGatewayProxyResultV2>()
-  .use(httpJsonBodyParser())
   .handler(lambda)
 

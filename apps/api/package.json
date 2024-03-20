@@ -12,6 +12,7 @@
     "@middy/core": "^5.2.6",
     "@middy/http-cors": "^5.2.6",
     "@middy/http-json-body-parser": "^5.2.6",
+    "@supabase/supabase-js": "^2.39.3",
     "openai": "4.17.3",
     "ts-node": "^10.9.2",
     "typescript": "~5.3.3",

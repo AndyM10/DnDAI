@@ -12,15 +12,17 @@ export class DnDStack extends cdk.Stack {
       entry: path.join(__dirname, '../../api/src/generate.ts'),
       timeout: cdk.Duration.seconds(20),
       environment: {
-        OPENAI_API_KEY: process.env.OPENAI_API_KEY || ''
+        OPENAI_API_KEY: process.env.OPENAI_API_KEY || '',
+        SUPBASE_URL: '',
+        SUPBASE_ANON_KEY: ''
       }
     })
 
     const functionUrl = generateFunction.addFunctionUrl({
       authType: lambda.FunctionUrlAuthType.NONE,
       cors: {
-        allowedOrigins: ['*'],
-        allowedHeaders: ['content-type', 'authorization'],
+        allowedOrigins: ['http://localhost:3000', 'https://dnd-ai-pi.vercel.app'],
+        allowedHeaders: ['Content-Type', 'Authorization'],
         allowedMethods: [lambda.HttpMethod.POST],
         allowCredentials: true
       }
