@@ -3,7 +3,7 @@ import { createClient } from "@supabase/supabase-js"
 import { Database } from "./database"
 
 export function supabaseClient() {
-  const { SUPABASE_URL, SUPABASE_ANON_KEY, SERVICE_ROLE_KEY } = process.env
+  const { SUPABASE_URL, SUPABASE_ANON_KEY } = process.env
 
   console.log(SUPABASE_URL, SUPABASE_ANON_KEY)
 

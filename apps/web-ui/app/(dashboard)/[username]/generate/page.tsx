@@ -3,10 +3,11 @@ import { Form, useForm } from "@/components/form/form";
 import { CheckIcon, RaceSelect, TextArea } from "@/components/form/inputs";
 import { z } from "zod";
 import { SubmitHandler } from "react-hook-form";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Loading from "./loading";
 import ImageContainer from "@/components/ImageContainer";
 import { Image } from "openai/resources";
+import { browserClient } from "@/lib/browserClient";
 
 export interface GenerationForm {
   race: any;
@@ -27,15 +28,26 @@ export default function Page() {
   const classes = ['barbarian', 'sorcerer', 'rogue', 'cleric', 'druid', 'paladin', 'warlock']
   const stlyes = ['hyperrealism', 'anime', 'pop-art', 'pixel-art', '3d', 'minimalist', 'isometric']
   const url = `${process.env.NEXT_PUBLIC_GENERATE_API_URL}`
+  const { supabase } = browserClient()
   const form = useForm({ schema: formSchema })
   const [images, setImages] = useState<Image[]>([])
   const [formData, setFormData] = useState<GenerationForm>()
   const [loading, setLoading] = useState(false)
   const [isError, setIsError] = useState<Error>()
+  const [accessToken, setAccesToken] = useState<string>()
   const { control } = form
 
   if (isError) throw isError
 
+  useEffect(() => {
+    async function fetchSession() {
+      const { data: { session }, error } = await supabase.auth.getSession()
+      if (error) throw new Error(error.message)
+      if (!session) throw new Error('No Session found')
+      setAccesToken(session.access_token)
+    }
+    fetchSession()
+  }, [])
   const onSubmit: SubmitHandler<GenerationForm> = async (data) => {
     try {
       setLoading(true)
@@ -43,7 +55,8 @@ export default function Page() {
       const image = await fetch(url, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${accessToken}`
         },
         body: JSON.stringify(data)
       })

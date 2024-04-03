@@ -21,11 +21,13 @@ const lambda = async (event: APIGatewayProxyEventV2, context: Context) => {
 
   try {
     if (!body) throw new Error('No Body Found')
-    console.log(body, event, context)
-    console.log(process.env)
-    const auth = headers['Authorization']
-    console.log('AUTH', auth)
+    const auth = headers['authorization']
     const { supabase } = supabaseClient()
+    const { data: { user }, error } = await supabase.auth.getUser(auth?.split(' ')[1])
+    if (error) {
+      throw new Error(error.message)
+    }
+    console.log(body)
     const userRequest = bodySchema.parse(body)
     const { race, style, story, role } = userRequest
 
@@ -65,5 +67,6 @@ const lambda = async (event: APIGatewayProxyEventV2, context: Context) => {
 
 
 export const handler = middy<APIGatewayProxyEventV2, APIGatewayProxyResultV2>()
+  .use(httpJsonBodyParser())
   .handler(lambda)
 
