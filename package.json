@@ -6,7 +6,7 @@
     "dev": "pnpm --filter dndai dev",
     "synth": "pnpm --filter infra cdk synth",
     "api:invoke": "sam local invoke -t ./apps/infra/cdk.out/InfraStack.template.json GenerateFunction --event ./apps/api/config/event.json",
-    "api:start": "sam local start-api -t ./apps/infra/cdk.out/InfraStack.template.json"
+    "api:start": "sam local start-lambda -t ./apps/infra/cdk.out/InfraStack.template.json --env-vars ./apps/api/config/env.json"
   },
   "keywords": [],
   "author": "",
